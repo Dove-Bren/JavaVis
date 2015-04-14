@@ -14,7 +14,7 @@ import java.util.Set;
  */
 public abstract class Configuration {
 	
-	private Map<String, Object> map;
+	protected Map<String, Object> map;
 	
 	/**
 	 * Construct an empty configuration.
