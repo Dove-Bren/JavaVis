@@ -1,12 +1,14 @@
 package com.smanzana.JavaVis.Representation.Graph;
 
+import com.smanzana.JavaVis.Representation.DataRepresentation;
+
 
 /**
  * Basic graph data structure.
  * @author Skyler
  *
  */
-public class Graph {
+public class Graph implements DataRepresentation {
 //	
 //	private Set<GraphNode> nodes;
 //	

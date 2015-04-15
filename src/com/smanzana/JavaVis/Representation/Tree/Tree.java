@@ -4,13 +4,15 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import com.smanzana.JavaVis.Representation.DataRepresentation;
+
 /**
  * Basic tree data structure with an undetermined number of children
  * Designed to be recursively defined
  * @author Skyler
  *
  */
-public class Tree {
+public class Tree implements DataRepresentation {
 	
 	private Tree parent;
 	
