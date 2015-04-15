@@ -1,11 +1,16 @@
 package com.smanzana.JavaVis.Visualization;
 
 import java.io.File;
+import java.io.IOException;
 
 import com.smanzana.JavaVis.Parser.JSON;
 import com.smanzana.JavaVis.Representation.DataRepresentation;
 import com.smanzana.JavaVis.Representation.Graph.DirectedGraph;
 import com.smanzana.JavaVis.Representation.Tree.Tree;
+
+import java.awt.Desktop;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class WebVisualization {
 	
@@ -14,11 +19,11 @@ public class WebVisualization {
 		IMPLEMENTS;
 	}
 	
-	public static final File resourceFolder = new File("resources");
+	public static final File resourceFolder = new File("web", "resources");
 	
-	public static final File extendsGraph = new File("resources", "extendsGraph.json");
+	public static final File implementsGraph = new File(resourceFolder, "extendsGraph.json");
 	
-	public static final File implementsTree = new File("resources", "implementsTree.json");
+	public static final File extendsTree = new File(resourceFolder, "implementsTree.json");
 	
 	public WebVisualization() {
 		if (!resourceFolder.exists()) {
@@ -30,18 +35,37 @@ public class WebVisualization {
 	
 	public void Visualize(VisualizationType type, DataRepresentation data) {
 		switch (type) {
-		case EXTENDS:
+		case IMPLEMENTS:
 			if (!(data instanceof DirectedGraph)) {
 				break;
 			}
-			JSON.toJSON(extendsGraph, (DirectedGraph) data);
+			JSON.toJSON(implementsGraph, (DirectedGraph) data);
 			break;
-		case IMPLEMENTS:
+		case EXTENDS:
 			if (!(data instanceof Tree)) {
 				break;
 			}
-			JSON.toJSON(implementsTree, (Tree) data);
+			JSON.toJSON(extendsTree, (Tree) data);
 			break;
+		}
+		
+		
+		
+		
+		
+		
+		
+
+		// ...
+
+		if(Desktop.isDesktopSupported())
+		{
+		  try {
+			Desktop.getDesktop().browse(new File("web", "index.html").toURI());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		}
 	}
 	

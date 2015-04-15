@@ -16,6 +16,9 @@ import com.smanzana.JavaVis.Parser.Wrappers.Import;
 import com.smanzana.JavaVis.Representation.Graph.DirectedGraph;
 import com.smanzana.JavaVis.Representation.Graph.DirectedGraphNode;
 import com.smanzana.JavaVis.Representation.Tree.Tree;
+import com.smanzana.JavaVis.Visualization.JungVisualization;
+import com.smanzana.JavaVis.Visualization.WebVisualization;
+import com.smanzana.JavaVis.Visualization.WebVisualization.VisualizationType;
 
 /**
  * This class is the driver for the visualization. 
@@ -54,20 +57,21 @@ public final class Driver {
 //			System.out.println(c.info());
 //		}
 		
-		Tree extendTree = classesAsExtendsTree(classes);
+		//Tree extendTree = classesAsExtendsTree(classes);
 		
-		System.out.println(extendTree);
+		//System.out.println(extendTree);
 		
 		DirectedGraph implementGraph = classesAsImplementsGraph(classes);
+		Tree extendTree = classesAsExtendsTree(classes);
 		//TODO TEST
 		
-		System.out.println(implementGraph);
-		
-		File outputJson = new File("ImplementGraph.json");
-		
-		JSON.toJSON(outputJson, implementGraph);
 		
 		
+		//WebVisualization webViz = new WebVisualization();
+		//webViz.Visualize(VisualizationType.IMPLEMENTS, implementGraph);
+		
+		JungVisualization jvis = new JungVisualization();
+		jvis.Visualize(implementGraph);
 	}
 	
 	

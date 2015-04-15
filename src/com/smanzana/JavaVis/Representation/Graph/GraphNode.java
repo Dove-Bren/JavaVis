@@ -6,6 +6,8 @@ public class GraphNode {
 	
 	private String name;
 	
+	protected Cclass cclass;
+	
 	/**
 	 * A unique id.<br />
 	 * This is going to be <i>parentPackage</i>.<i>name</i><br />
@@ -40,6 +42,9 @@ public class GraphNode {
 		return uniqueKey;
 	}
 	
+	public Cclass getCclass() {
+		return cclass;
+	}
 	
 	
 }
