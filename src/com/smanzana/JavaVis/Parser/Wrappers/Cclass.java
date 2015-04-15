@@ -12,8 +12,16 @@ import com.smanzana.JavaVis.Parser.ClassDeclaration;
  */
 public class Cclass {
 	
+	public enum Type {
+		CLASS,
+		INTERFACE,
+		ENUM;
+	}
+	
 	
 	private String name;
+	
+	private Type type;
 	
 	private String packageName;
 	
@@ -23,9 +31,10 @@ public class Cclass {
 	
 	private ClassDeclaration declaration;
 	
-	public Cclass(String name, ClassDeclaration decl, String packageName, List<Method> methods) {
+	public Cclass(String name, Type type, ClassDeclaration decl, String packageName, List<Method> methods) {
 		
 		this.declaration = decl;
+		this.type = type;
 		this.name = name;
 		this.packageName = packageName;
 		
@@ -40,23 +49,23 @@ public class Cclass {
 	}
 	
 	public Cclass (ClassDeclaration decl, String packageName, List<Method> methods) {
-		this(decl.getClassName(), decl, packageName, methods);
+		this(decl.getClassName(), decl.getType(), decl, packageName, methods);
 	}
 	
 	public Cclass(String name, String packageName, List<Method> methods) {
-		this(name, null, packageName, methods);
+		this(name, Type.CLASS, null, packageName, methods);
 	}
 	
 	public Cclass(String name, String packageName) {
-		this(name, null, packageName, null);
+		this(name, Type.CLASS, null, packageName, null);
 	}
 	
 	public Cclass(String name) {
-		this(name, null, null, null);
+		this(name, Type.CLASS, null, null, null);
 	}
 	
 	public Cclass(ClassDeclaration decl) {
-		this(decl.getClassName(), decl, null, null);
+		this(decl.getClassName(), decl.getType(), decl, null, null);
 	}
 	
 	
@@ -120,6 +129,10 @@ public class Cclass {
 		return null;
 	}
 	
+	public Type getType() {
+		return type;
+	}
+	
 	
 	
 	/**
@@ -129,7 +142,7 @@ public class Cclass {
 	 */
 	public String info() {
 
-		String out =  "[" + this.packageName + "." + this.name +"]:\n";
+		String out =  type.name() + " [" + this.packageName + "." + this.name +"]:\n";
 		if (!imports.isEmpty()) {
 			out += "Import statements: \n";
 			for (Import im : imports) {

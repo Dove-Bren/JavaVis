@@ -3,6 +3,9 @@ package com.smanzana.JavaVis.Parser;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.smanzana.JavaVis.Parser.Wrappers.Cclass;
+import com.smanzana.JavaVis.Parser.Wrappers.Cclass.Type;
+
 
 /**
  * Represent a class declaration.<br />
@@ -21,6 +24,8 @@ public class ClassDeclaration {
 	private String extendString;
 	
 	private Set<String> implementStrings;
+	
+	private Type type;
 	
 	public ClassDeclaration(String declaration) {
 		this.declarationLine = declaration.trim();
@@ -49,6 +54,13 @@ public class ClassDeclaration {
 				if (name.contains("<")) {
 					this.name += tokens[i + 2].substring(0, tokens[i+2].indexOf(">") + 1);
 							
+				}
+				if (tokens[i].equalsIgnoreCase("class")) {
+					type = Cclass.Type.CLASS;
+				} else if (tokens[i].equalsIgnoreCase("interface")) {
+					type = Cclass.Type.INTERFACE;
+				} else {
+					type = Cclass.Type.ENUM;
 				}
 			}
 			else {
@@ -112,5 +124,9 @@ public class ClassDeclaration {
 	
 	public Set<String> getImplements() {
 		return implementStrings;
+	}
+	
+	public Type getType() {
+		return type;
 	}
 }
