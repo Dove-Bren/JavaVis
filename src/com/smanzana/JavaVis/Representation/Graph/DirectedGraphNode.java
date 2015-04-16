@@ -23,6 +23,7 @@ public class DirectedGraphNode extends GraphNode{
 		this.name = cl.getName();
 		this.edges = new HashSet<DirectedWeightedEdge>();
 		this.uniqueKey = (cl.getPackageName().substring(cl.getPackageName().lastIndexOf(".") + 1)) + "." + this.name;
+		this.cclass = cl;
 	}
 
 
