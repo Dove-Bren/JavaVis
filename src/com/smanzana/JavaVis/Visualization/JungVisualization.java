@@ -91,6 +91,8 @@ public class JungVisualization {
 	private VisualizationViewer<GraphNode, DirectedWeightedEdge> vv;
 	
 	private Layout<GraphNode, DirectedWeightedEdge> layout;
+	
+	private DefaultModalGraphMouse mouse;
 
 	public void Visualize(Graph graph) {
 		// TODO Auto-generated method stub
@@ -186,7 +188,7 @@ public class JungVisualization {
 	     
 	     
 	     //create mouse
-	     DefaultModalGraphMouse mouse = new DefaultModalGraphMouse();
+	     mouse = new DefaultModalGraphMouse();
 	     mouse.setMode(Mode.TRANSFORMING);
 	     mouse.add(new SearchPlugin());
 	     vv.addKeyListener(mouse.getModeKeyListener());
@@ -233,21 +235,67 @@ public class JungVisualization {
 		if (searchTerm == null) {
 			searchTerm = "";
 		}
-		searchTerm = (String) JOptionPane.showInputDialog(window, "Search for:", searchTerm);
+		searchTerm = (String) JOptionPane.showInputDialog(window, "Search for objects that begin with:", searchTerm);
 		
 		if (searchTerm == null) {
 			return;
 		}
 		
-		GraphNode result = null;
+		mouse.setMode(Mode.PICKING);
+		
+		boolean gotResults = false;
 		PickedState<GraphNode> info = vv.getPickedVertexState();
 		for (GraphNode node : layout.getGraph().getVertices()) {
 			if (node.getCclass().getName().startsWith(searchTerm)) {
 				info.pick(node, true);
+				gotResults = true;
 			} else {
 				info.pick(node, false);
 			}
 		}
+		
+		if (gotResults) {
+			return;
+		}
+		//there were no matches. Let's try again with a no-case search
+		
+		for (GraphNode node : layout.getGraph().getVertices()) {
+			if (node.getCclass().getName().toLowerCase().startsWith(searchTerm.toLowerCase())) {
+				info.pick(node, true);
+				gotResults = true;
+			} else {
+				info.pick(node, false);
+			}
+		}
+		
+		if (gotResults) {
+			return;
+		}
+		
+		//still no results. Let's search for a 'contains'
+		for (GraphNode node : layout.getGraph().getVertices()) {
+			if (node.getCclass().getName().contains(searchTerm)) {
+				info.pick(node, true);
+				gotResults = true;
+			} else {
+				info.pick(node, false);
+			}
+		}
+		
+		if (gotResults) {
+			return;
+		}
+		
+		//no results. finally a contains not-case-sensitive
+		//still no results. Let's search for a 'contains'
+				for (GraphNode node : layout.getGraph().getVertices()) {
+					if (node.getCclass().getName().toLowerCase().contains(searchTerm.toLowerCase())) {
+						info.pick(node, true);
+						gotResults = true;
+					} else {
+						info.pick(node, false);
+					}
+				}
 	}
 
 }
