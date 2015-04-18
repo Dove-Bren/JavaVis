@@ -21,11 +21,10 @@ import javax.swing.JToolBar;
 
 import org.apache.commons.collections15.Transformer;
 
+import com.smanzana.JavaVis.Parser.Wrappers.Cclass;
 import com.smanzana.JavaVis.Representation.DataRepresentation;
-import com.smanzana.JavaVis.Representation.Graph.Graph;
-import com.smanzana.JavaVis.Representation.Graph.GraphNode;
-import com.smanzana.JavaVis.Representation.Graph.UndirectedWeightedEdge;
 import com.smanzana.JavaVis.Representation.Tree.Tree;
+import com.smanzana.JavaVis.Util.Pair;
 
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
@@ -103,11 +102,11 @@ public class JungVisualization {
 	
 	private String searchTerm;
 	
-	private VisualizationViewer<GraphNode, UndirectedWeightedEdge> vv;
+	private VisualizationViewer<Cclass, Pair<Cclass, Cclass>> vv;
 	
-	private Layout<GraphNode, UndirectedWeightedEdge> layout;
+	private Layout<Cclass, Pair<Cclass, Cclass>> layout;
 	
-	private DefaultModalGraphMouse<GraphNode, UndirectedWeightedEdge> mouse;
+	private DefaultModalGraphMouse<Cclass, Pair<Cclass, Cclass>> mouse;
 	
 	private Map<DataRepresentation.RepresentationType, DataRepresentation> map;
 	
@@ -119,29 +118,37 @@ public class JungVisualization {
 		map.put(type, data);
 	}
 	
-	public void Visualize(Graph graph) {
-		edu.uci.ics.jung.graph.Graph<GraphNode, UndirectedWeightedEdge> visGraph = new DirectedSparseGraph<GraphNode, UndirectedWeightedEdge>();
+	public void Visualize() {
 		
-		for (GraphNode node : graph.getNodes()) {
+		if (map.isEmpty()) {
+			System.out.println("Unable to start visualization because there is no data to visualize!");
+			return;
+		}
+		
+		edu.uci.ics.jung.graph.Graph<Cclass, Pair<Cclass, Cclass>> visGraph = new DirectedSparseGraph<Cclass, Pair<Cclass, Cclass>>();
+		
+		DataRepresentation dataRep = map.values().iterator().next(); //get first stored visualization
+		
+		for (Cclass node : dataRep.getClasses()) {
 			visGraph.addVertex(node);
 		}
-		for (UndirectedWeightedEdge e : graph.getEdges()) {
-			visGraph.addEdge(e, e.getEnds().getLeft(), e.getEnds().getRight());
+		for (Pair<Cclass, Cclass> e : dataRep.getPairs()) {
+			visGraph.addEdge(e, e.getLeft(), e.getRight());
 		}
 	
 	    // The Layout<V, E> is parameterized by the vertex and edge types
-	    layout = new CircleLayout<GraphNode, UndirectedWeightedEdge>(visGraph);
+	    layout = new CircleLayout<Cclass, Pair<Cclass, Cclass>>(visGraph);
 	    layout.setSize(new Dimension(600,600)); // sets the initial size of the space
 	     // The BasicVisualizationServer<V,E> is parameterized by the edge types
-	     vv = new VisualizationViewer<GraphNode, UndirectedWeightedEdge>(layout);
+	     vv = new VisualizationViewer<Cclass, Pair<Cclass, Cclass>>(layout);
 	     vv.setPreferredSize(new Dimension(700,700)); //Sets the viewing area size
 	     
-	     Transformer<GraphNode,Paint> vertexPaint = new Transformer<GraphNode, Paint>() {
-	         public Paint transform(GraphNode node) {
-	        	 if (node == null || node.getCclass() == null) {
+	     Transformer<Cclass,Paint> vertexPaint = new Transformer<Cclass, Paint>() {
+	         public Paint transform(Cclass node) {
+	        	 if (node == null) {
 	        		 return Color.DARK_GRAY;
 	        	 }
-	             switch (node.getCclass().getType()) {
+	             switch (node.getType()) {
 	             case CLASS:
 	            	 return classColor;
 	             case INTERFACE:
@@ -153,26 +160,24 @@ public class JungVisualization {
 	         }
 	     };  
 	     
-	     Transformer<GraphNode, String> vertexLabel = new Transformer<GraphNode, String>() {
-	    	 public String transform(GraphNode node) {
-	    		 if (node == null || node.getCclass() == null) {
+	     Transformer<Cclass, String> vertexLabel = new Transformer<Cclass, String>() {
+	    	 public String transform(Cclass node) {
+	    		 if (node == null) {
 	    			 return "";
 	    		 }
-	    		 return node.getCclass().getName();
+	    		 return node.getName();
 	    	 }
 	     };
 	     
-	     Transformer<GraphNode, Shape> vertexShape = new Transformer<GraphNode, Shape>() {
-	    	public Shape transform(GraphNode node) {
+	     Transformer<Cclass, Shape> vertexShape = new Transformer<Cclass, Shape>() {
+	    	public Shape transform(Cclass node) {
 	    		if (node == null) {
 	    			return null;
 	    		}
 	    		
 	    		double size = 30;
 	    		
-	    		if (node.getCclass() == null) {
-	    			size = size / 2;
-	    		} else if (vv.getPickedVertexState().isPicked(node)) {
+	    		if (vv.getPickedVertexState().isPicked(node)) {
 	    			size = size * 1.25;
 	    		}
 	    		
@@ -198,14 +203,14 @@ public class JungVisualization {
 //	     };
 	     
 	     vv.getRenderContext().setVertexFillPaintTransformer(vertexPaint);
-	     vv.setVertexToolTipTransformer(new ToStringLabeller<GraphNode>());
+	     vv.setVertexToolTipTransformer(new ToStringLabeller<Cclass>());
 	     vv.getRenderContext().setVertexLabelTransformer(vertexLabel);
 	     vv.getRenderContext().setVertexShapeTransformer(vertexShape);
 	     //vv.getRenderContext().setVer(vertexTooltip);
 	     
 	     
 	     //create mouse
-	     mouse = new DefaultModalGraphMouse<GraphNode, UndirectedWeightedEdge>();
+	     mouse = new DefaultModalGraphMouse<Cclass, Pair<Cclass, Cclass>>();
 	     mouse.setMode(Mode.TRANSFORMING);
 	     //mouse.add(new BrushPlugin(this));
 	     vv.addKeyListener(mouse.getModeKeyListener());
@@ -273,9 +278,9 @@ public class JungVisualization {
 		mouse.setMode(Mode.PICKING);
 		
 		boolean gotResults = false;
-		PickedState<GraphNode> info = vv.getPickedVertexState();
-		for (GraphNode node : layout.getGraph().getVertices()) {
-			if (node.getCclass().getName().startsWith(searchTerm)) {
+		PickedState<Cclass> info = vv.getPickedVertexState();
+		for (Cclass node : layout.getGraph().getVertices()) {
+			if (node.getName().startsWith(searchTerm)) {
 				info.pick(node, true);
 				gotResults = true;
 			} else {
@@ -288,8 +293,8 @@ public class JungVisualization {
 		}
 		//there were no matches. Let's try again with a no-case search
 		
-		for (GraphNode node : layout.getGraph().getVertices()) {
-			if (node.getCclass().getName().toLowerCase().startsWith(searchTerm.toLowerCase())) {
+		for (Cclass node : layout.getGraph().getVertices()) {
+			if (node.getName().toLowerCase().startsWith(searchTerm.toLowerCase())) {
 				info.pick(node, true);
 				gotResults = true;
 			} else {
@@ -302,8 +307,8 @@ public class JungVisualization {
 		}
 		
 		//still no results. Let's search for a 'contains'
-		for (GraphNode node : layout.getGraph().getVertices()) {
-			if (node.getCclass().getName().contains(searchTerm)) {
+		for (Cclass node : layout.getGraph().getVertices()) {
+			if (node.getName().contains(searchTerm)) {
 				info.pick(node, true);
 				gotResults = true;
 			} else {
@@ -317,8 +322,8 @@ public class JungVisualization {
 		
 		//no results. finally a contains not-case-sensitive
 		//still no results. Let's search for a 'contains'
-				for (GraphNode node : layout.getGraph().getVertices()) {
-					if (node.getCclass().getName().toLowerCase().contains(searchTerm.toLowerCase())) {
+				for (Cclass node : layout.getGraph().getVertices()) {
+					if (node.getName().toLowerCase().contains(searchTerm.toLowerCase())) {
 						info.pick(node, true);
 						gotResults = true;
 					} else {
