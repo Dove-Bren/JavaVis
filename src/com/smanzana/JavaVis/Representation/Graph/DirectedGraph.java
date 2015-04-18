@@ -16,8 +16,30 @@ public class DirectedGraph extends Graph {
 		nodes = new HashSet<DirectedGraphNode>();
 	}
 
-	public Set<DirectedGraphNode> getNodes() {
+	public Set<GraphNode> getNodes() {
+		return new HashSet<GraphNode>(nodes);
+	}
+	
+	public Set<DirectedGraphNode> getDirectedNodes() {
 		return nodes;
+	}
+	
+	public Set<UndirectedWeightedEdge> getEdges() {
+		Set<UndirectedWeightedEdge> edges = new HashSet<UndirectedWeightedEdge>();
+		for (DirectedGraphNode node : nodes) {
+			edges.addAll(node.getEdges());
+		}
+		
+		return edges;
+	}
+	
+	public Set<DirectedWeightedEdge> getWeightedEdges() {
+		Set<DirectedWeightedEdge> edges = new HashSet<DirectedWeightedEdge>();
+		for (DirectedGraphNode node : nodes) {
+			edges.addAll(node.getEdges());
+		}
+		
+		return edges;
 	}
 	
 	public boolean addNode(DirectedGraphNode node) {

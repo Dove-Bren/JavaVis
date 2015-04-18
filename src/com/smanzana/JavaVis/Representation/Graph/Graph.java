@@ -1,5 +1,7 @@
 package com.smanzana.JavaVis.Representation.Graph;
 
+import java.util.Set;
+
 import com.smanzana.JavaVis.Representation.DataRepresentation;
 
 
@@ -8,7 +10,7 @@ import com.smanzana.JavaVis.Representation.DataRepresentation;
  * @author Skyler
  *
  */
-public class Graph implements DataRepresentation {
+public abstract class Graph extends DataRepresentation {
 //	
 //	private Set<GraphNode> nodes;
 //	
@@ -129,5 +131,9 @@ public class Graph implements DataRepresentation {
 //		}
 //	}
 //	
+	
+	public abstract Set<UndirectedWeightedEdge> getEdges();
+	
+	public abstract Set<GraphNode> getNodes();
 	
 }

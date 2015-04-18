@@ -6,9 +6,7 @@ import java.awt.Dimension;
 import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
-import java.awt.geom.Point2D;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -23,7 +21,7 @@ import org.apache.commons.collections15.Transformer;
 
 import com.smanzana.JavaVis.Representation.Graph.DirectedGraph;
 import com.smanzana.JavaVis.Representation.Graph.DirectedGraphNode;
-import com.smanzana.JavaVis.Representation.Graph.DirectedWeightedEdge;
+import com.smanzana.JavaVis.Representation.Graph.UndirectedWeightedEdge;
 import com.smanzana.JavaVis.Representation.Graph.Graph;
 import com.smanzana.JavaVis.Representation.Graph.GraphNode;
 import com.smanzana.JavaVis.Representation.Tree.Tree;
@@ -32,10 +30,8 @@ import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
-import edu.uci.ics.jung.visualization.control.AbstractPopupGraphMousePlugin;
 import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse.Mode;
-import edu.uci.ics.jung.visualization.control.PickingGraphMousePlugin;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 import edu.uci.ics.jung.visualization.picking.PickedState;
 
@@ -75,6 +71,8 @@ public class JungVisualization {
 //		
 //	}
 	
+	
+	
 	private static final class SearchAction extends AbstractAction {
 		
 		/**
@@ -84,7 +82,7 @@ public class JungVisualization {
 
 		private JungVisualization vis;
 		
-		boolean enabled;
+		//boolean enabled;
 		
 		public SearchAction(JungVisualization vis) {
 			super("Search", null);
@@ -104,35 +102,28 @@ public class JungVisualization {
 	
 	private String searchTerm;
 	
-	private VisualizationViewer<GraphNode, DirectedWeightedEdge> vv;
+	private VisualizationViewer<GraphNode, UndirectedWeightedEdge> vv;
 	
-	private Layout<GraphNode, DirectedWeightedEdge> layout;
+	private Layout<GraphNode, UndirectedWeightedEdge> layout;
 	
-	private DefaultModalGraphMouse<GraphNode, DirectedWeightedEdge> mouse;
+	private DefaultModalGraphMouse<GraphNode, UndirectedWeightedEdge> mouse;
 
-	public void Visualize(Graph graph) {
-		// TODO Auto-generated method stub
-		
-				
-		
-	}
 	
-	public void Visualize(DirectedGraph graph) {
-		edu.uci.ics.jung.graph.Graph<GraphNode, DirectedWeightedEdge> visGraph = new DirectedSparseGraph<GraphNode, DirectedWeightedEdge>();
+	public void Visualize(Graph graph) {
+		edu.uci.ics.jung.graph.Graph<GraphNode, UndirectedWeightedEdge> visGraph = new DirectedSparseGraph<GraphNode, UndirectedWeightedEdge>();
 		
 		for (GraphNode node : graph.getNodes()) {
 			visGraph.addVertex(node);
 		}
-		for (DirectedGraphNode node : graph.getNodes())
-		for (DirectedWeightedEdge e : node.getEdges()) {
-			visGraph.addEdge(e, e.getSource(), e.getDestination());
+		for (UndirectedWeightedEdge e : graph.getEdges()) {
+			visGraph.addEdge(e, e.getEnds().getLeft(), e.getEnds().getRight());
 		}
 	
 	    // The Layout<V, E> is parameterized by the vertex and edge types
-	    layout = new CircleLayout<GraphNode, DirectedWeightedEdge>(visGraph);
+	    layout = new CircleLayout<GraphNode, UndirectedWeightedEdge>(visGraph);
 	    layout.setSize(new Dimension(600,600)); // sets the initial size of the space
 	     // The BasicVisualizationServer<V,E> is parameterized by the edge types
-	     vv = new VisualizationViewer<GraphNode, DirectedWeightedEdge>(layout);
+	     vv = new VisualizationViewer<GraphNode, UndirectedWeightedEdge>(layout);
 	     vv.setPreferredSize(new Dimension(700,700)); //Sets the viewing area size
 	     
 	     Transformer<GraphNode,Paint> vertexPaint = new Transformer<GraphNode, Paint>() {
@@ -175,7 +166,7 @@ public class JungVisualization {
 	    			size = size * 1.25;
 	    		}
 	    		
-	    		Point2D point = layout.transform(node);
+	    		//Point2D point = layout.transform(node);
 	    		//return new Ellipse2D.Double(point.getX() - size/2, point.getY() - size/2, size, size);
 	    		return new Ellipse2D.Double(-size/2, -size/2, size, size);
 	    	}
@@ -204,7 +195,7 @@ public class JungVisualization {
 	     
 	     
 	     //create mouse
-	     mouse = new DefaultModalGraphMouse<GraphNode, DirectedWeightedEdge>();
+	     mouse = new DefaultModalGraphMouse<GraphNode, UndirectedWeightedEdge>();
 	     mouse.setMode(Mode.TRANSFORMING);
 	     //mouse.add(new BrushPlugin(this));
 	     vv.addKeyListener(mouse.getModeKeyListener());

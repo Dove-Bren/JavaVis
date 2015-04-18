@@ -9,8 +9,6 @@ import com.smanzana.JavaVis.Representation.Graph.DirectedGraph;
 import com.smanzana.JavaVis.Representation.Tree.Tree;
 
 import java.awt.Desktop;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 public class WebVisualization {
 	

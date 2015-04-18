@@ -12,7 +12,7 @@ import com.smanzana.JavaVis.Representation.DataRepresentation;
  * @author Skyler
  *
  */
-public class Tree implements DataRepresentation {
+public class Tree extends DataRepresentation {
 	
 	private Tree parent;
 	

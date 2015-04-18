@@ -105,7 +105,7 @@ public final class JSON {
 		//no nifty recusion here D:
 		writer.print("[ ");
 		
-		Iterator<DirectedGraphNode> nodeIt = graph.getNodes().iterator();
+		Iterator<DirectedGraphNode> nodeIt = graph.getDirectedNodes().iterator();
 		DirectedGraphNode node;
 		while (nodeIt.hasNext()) {
 			node = nodeIt.next();
