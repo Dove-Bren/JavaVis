@@ -8,15 +8,25 @@ import com.smanzana.JavaVis.Util.Pair;
 public abstract class DataRepresentation {
 	
 	public enum RepresentationType {
-		extend,
-		implement,
-		referencedby,
-		referenceto,
-		reference,
-		calledby,
-		callto,
-		call,
-		all;
+		extend("Direct Inheritence"),
+		implement("Interface Inheritence"),
+		referencedby("Referenced By"),
+		referenceto("References To"),
+		reference("Reference"),
+		calledby("Called By"),
+		callto("Calls On"),
+		call("Calls"),
+		all("All");
+		
+		private String title;
+		
+		private RepresentationType(String e) {
+			title = e;
+		}
+		
+		public String getTitle() {
+			return title;
+		}
 	}
 	
 	public abstract Set<Cclass> getClasses();

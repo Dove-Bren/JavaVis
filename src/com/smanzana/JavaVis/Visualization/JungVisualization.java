@@ -98,6 +98,34 @@ public class JungVisualization {
 		
 	}
 	
+	private static final class ViewAction extends AbstractAction{
+		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		private JungVisualization vis;
+		
+		private DataRepresentation.RepresentationType type;
+		
+		public ViewAction(JungVisualization vis, DataRepresentation.RepresentationType type) {
+			super(type.getTitle(), null);
+			this.vis = vis;
+			this.type = type;
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			if (vis == null || vis.vv == null) {
+				return;
+			}
+			
+			vis.Visualize(type);
+		}
+		
+	}
+	
 	private JFrame window;
 	
 	private String searchTerm;
@@ -119,15 +147,25 @@ public class JungVisualization {
 	}
 	
 	public void Visualize() {
+		Visualize( (DataRepresentation.RepresentationType) null);
+	}
+	
+	public void Visualize(DataRepresentation.RepresentationType type) {
 		
 		if (map.isEmpty()) {
 			System.out.println("Unable to start visualization because there is no data to visualize!");
 			return;
 		}
 		
+		if (type == null) {
+			type = map.keySet().iterator().next();
+		}
+		
+		DataRepresentation dataRep = map.get(type);
+		
 		edu.uci.ics.jung.graph.Graph<Cclass, Pair<Cclass, Cclass>> visGraph = new DirectedSparseGraph<Cclass, Pair<Cclass, Cclass>>();
 		
-		DataRepresentation dataRep = map.values().iterator().next(); //get first stored visualization
+		
 		
 		for (Cclass node : dataRep.getClasses()) {
 			visGraph.addVertex(node);
@@ -136,124 +174,142 @@ public class JungVisualization {
 			visGraph.addEdge(e, e.getLeft(), e.getRight());
 		}
 	
-	    // The Layout<V, E> is parameterized by the vertex and edge types
+	    //create layout based on current loaded visualization
 	    layout = new CircleLayout<Cclass, Pair<Cclass, Cclass>>(visGraph);
-	    layout.setSize(new Dimension(600,600)); // sets the initial size of the space
-	     // The BasicVisualizationServer<V,E> is parameterized by the edge types
-	     vv = new VisualizationViewer<Cclass, Pair<Cclass, Cclass>>(layout);
-	     vv.setPreferredSize(new Dimension(700,700)); //Sets the viewing area size
-	     
-	     Transformer<Cclass,Paint> vertexPaint = new Transformer<Cclass, Paint>() {
-	         public Paint transform(Cclass node) {
-	        	 if (node == null) {
-	        		 return Color.DARK_GRAY;
-	        	 }
-	             switch (node.getType()) {
-	             case CLASS:
-	            	 return classColor;
-	             case INTERFACE:
-	            	 return interfaceColor;
-	             case ENUM:
-	             default:
-	            	 return enumColor;
-	             }
-	         }
-	     };  
-	     
-	     Transformer<Cclass, String> vertexLabel = new Transformer<Cclass, String>() {
-	    	 public String transform(Cclass node) {
-	    		 if (node == null) {
-	    			 return "";
-	    		 }
-	    		 return node.getName();
-	    	 }
-	     };
-	     
-	     Transformer<Cclass, Shape> vertexShape = new Transformer<Cclass, Shape>() {
-	    	public Shape transform(Cclass node) {
-	    		if (node == null) {
-	    			return null;
-	    		}
-	    		
-	    		double size = 30;
-	    		
-	    		if (vv.getPickedVertexState().isPicked(node)) {
-	    			size = size * 1.25;
-	    		}
-	    		
-	    		//Point2D point = layout.transform(node);
-	    		//return new Ellipse2D.Double(point.getX() - size/2, point.getY() - size/2, size, size);
-	    		return new Ellipse2D.Double(-size/2, -size/2, size, size);
-	    	}
-	     };
-	     
-//	     Transformer<GraphNode, String> vertexTooltip = new Transformer<GraphNode, String>(){
-//	    	public String transform(GraphNode node) {
-//	    		if (node == null || node.getCclass() == null) {
-//	    			return "Invalid Description!";
-//	    		}
-//	    		
-//	    		String str = "";
-//	    		
-//	    		str = node.getName() + node.getCclass().getType().name() + "\n" +
-//	    				node.getCclass().info();
-//	    		
-//	    		return str;
-//	    	}
-//	     };
-	     
-	     vv.getRenderContext().setVertexFillPaintTransformer(vertexPaint);
-	     vv.setVertexToolTipTransformer(new ToStringLabeller<Cclass>());
-	     vv.getRenderContext().setVertexLabelTransformer(vertexLabel);
-	     vv.getRenderContext().setVertexShapeTransformer(vertexShape);
-	     //vv.getRenderContext().setVer(vertexTooltip);
-	     
-	     
-	     //create mouse
-	     mouse = new DefaultModalGraphMouse<Cclass, Pair<Cclass, Cclass>>();
-	     mouse.setMode(Mode.TRANSFORMING);
-	     //mouse.add(new BrushPlugin(this));
-	     vv.addKeyListener(mouse.getModeKeyListener());
-	     vv.setGraphMouse(mouse);
-	     
-	     window = new JFrame("JavaVis Code Explorer");
-	     window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	     
-	     JPanel content = new JPanel();
-	     content.setLayout(new BorderLayout());
-	     content.setBorder(BorderFactory.createLoweredBevelBorder());
-	     JPanel navigation = new JPanel();
-	     navigation.setBorder(BorderFactory.createRaisedBevelBorder());
-	     navigation.setLayout(new BorderLayout());
-	     navigation.setPreferredSize(new Dimension(200,700));
-	     
-	     //set up two nested frames
-	     window.getContentPane().setLayout(new BorderLayout());
-	     window.getContentPane().add(content, BorderLayout.EAST);
-	     window.getContentPane().add(navigation, BorderLayout.WEST);
-	     
+	    layout.setSize(new Dimension(600,600));
+	    
+	    //create a visualizatoin viewer if we don't have one, or update current with new type
+	    if (vv == null) {
+	    	vv = new VisualizationViewer<Cclass, Pair<Cclass, Cclass>>(layout);
+		    vv.setPreferredSize(new Dimension(700,700)); //Sets the viewing area size
+		    
+		    Transformer<Cclass,Paint> vertexPaint = new Transformer<Cclass, Paint>() {
+		         public Paint transform(Cclass node) {
+		        	 if (node == null) {
+		        		 return Color.DARK_GRAY;
+		        	 }
+		             switch (node.getType()) {
+		             case CLASS:
+		            	 return classColor;
+		             case INTERFACE:
+		            	 return interfaceColor;
+		             case ENUM:
+		             default:
+		            	 return enumColor;
+		             }
+		         }
+		     };  
+		     
+		     Transformer<Cclass, String> vertexLabel = new Transformer<Cclass, String>() {
+		    	 public String transform(Cclass node) {
+		    		 if (node == null) {
+		    			 return "";
+		    		 }
+		    		 return node.getName();
+		    	 }
+		     };
+		     
+		     Transformer<Cclass, Shape> vertexShape = new Transformer<Cclass, Shape>() {
+		    	public Shape transform(Cclass node) {
+		    		if (node == null) {
+		    			return null;
+		    		}
+		    		
+		    		double size = 30;
+		    		
+		    		if (vv.getPickedVertexState().isPicked(node)) {
+		    			size = size * 1.25;
+		    		}
+		    		
+		    		//Point2D point = layout.transform(node);
+		    		//return new Ellipse2D.Double(point.getX() - size/2, point.getY() - size/2, size, size);
+		    		return new Ellipse2D.Double(-size/2, -size/2, size, size);
+		    	}
+		     };
+		     
+//		     Transformer<GraphNode, String> vertexTooltip = new Transformer<GraphNode, String>(){
+//		    	public String transform(GraphNode node) {
+//		    		if (node == null || node.getCclass() == null) {
+//		    			return "Invalid Description!";
+//		    		}
+//		    		
+//		    		String str = "";
+//		    		
+//		    		str = node.getName() + node.getCclass().getType().name() + "\n" +
+//		    				node.getCclass().info();
+//		    		
+//		    		return str;
+//		    	}
+//		     };
+		     
+		     vv.getRenderContext().setVertexFillPaintTransformer(vertexPaint);
+		     vv.setVertexToolTipTransformer(new ToStringLabeller<Cclass>());
+		     vv.getRenderContext().setVertexLabelTransformer(vertexLabel);
+		     vv.getRenderContext().setVertexShapeTransformer(vertexShape);
+		     //vv.getRenderContext().setVer(vertexTooltip);
+		     
+		     
+		     //create mouse
+		     mouse = new DefaultModalGraphMouse<Cclass, Pair<Cclass, Cclass>>();
+		     mouse.setMode(Mode.TRANSFORMING);
+		     //mouse.add(new BrushPlugin(this));
+		     vv.addKeyListener(mouse.getModeKeyListener());
+		     vv.setGraphMouse(mouse);
+		     
+		     window = new JFrame("JavaVis Code Explorer");
+		     window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		     
+		     JPanel content = new JPanel();
+		     content.setLayout(new BorderLayout());
+		     content.setBorder(BorderFactory.createLoweredBevelBorder());
+		     JPanel navigation = new JPanel();
+		     navigation.setBorder(BorderFactory.createRaisedBevelBorder());
+		     navigation.setLayout(new BorderLayout());
+		     navigation.setPreferredSize(new Dimension(200,700));
+		     
+		     //set up two nested frames
+		     window.getContentPane().setLayout(new BorderLayout());
+		     window.getContentPane().add(content, BorderLayout.EAST);
+		     window.getContentPane().add(navigation, BorderLayout.WEST);
+		     
 
-	     JToolBar toolbar = new JToolBar();
-	     toolbar.add(new SearchAction(this));
-	     content.add(toolbar, BorderLayout.PAGE_START);
-	     
-	     content.add(vv, BorderLayout.CENTER); 
-	     
+		     JToolBar toolbar = new JToolBar();
+		     toolbar.add(new SearchAction(this));
+		     content.add(toolbar, BorderLayout.PAGE_START);
+		     
+		     content.add(vv, BorderLayout.CENTER); 
+		     
 
+		     JMenuBar menuBar = new JMenuBar();
+
+		     //Create menu for different views
+		     JMenu viewMenu = new JMenu();
+		     viewMenu.setText("View");
+		     viewMenu.setIcon(null);
+		     //viewMenu.add(a)
+		     for (DataRepresentation.RepresentationType rt : map.keySet()) {
+		    	 viewMenu.add(new ViewAction(this, rt));
+		     }
+		     
+		     menuBar.add(viewMenu);
+		     
+		     //code from JUNG interaction tutorial
+		     JMenu modeMenu = mouse.getModeMenu(); // Obtain mode menu from the mouse
+		     modeMenu.setText("Mouse Mode");
+		     modeMenu.setIcon(null); // I'm using this in a main menu
+		     modeMenu.setPreferredSize(new Dimension(80,20)); // Change the size 
+		     menuBar.add(modeMenu);
+		     
+		     window.setJMenuBar(menuBar);
+		     
+		     
+		     window.pack();
+		     window.setVisible(true);   
+	    } else {
+	    	vv.setGraphLayout(layout);
+	    }
 	     
-	     //code from JUNG interaction tutorial
-	     JMenuBar menuBar = new JMenuBar();
-	     JMenu modeMenu = mouse.getModeMenu(); // Obtain mode menu from the mouse
-	     modeMenu.setText("Mouse Mode");
-	     modeMenu.setIcon(null); // I'm using this in a main menu
-	     modeMenu.setPreferredSize(new Dimension(80,20)); // Change the size 
-	     menuBar.add(modeMenu);
-	     
-	     window.setJMenuBar(menuBar);
-	     
-	     
-	     window.pack();
-	     window.setVisible(true);     
+	      
 	}
 	
 	public void Visualize(Tree tree) {

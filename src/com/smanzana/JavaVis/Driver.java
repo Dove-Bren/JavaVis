@@ -13,6 +13,7 @@ import com.smanzana.JavaVis.Parser.FileParser;
 import com.smanzana.JavaVis.Parser.JSON;
 import com.smanzana.JavaVis.Parser.Wrappers.Cclass;
 import com.smanzana.JavaVis.Parser.Wrappers.Import;
+import com.smanzana.JavaVis.Representation.DataRepresentation.RepresentationType;
 import com.smanzana.JavaVis.Representation.Graph.DirectedGraph;
 import com.smanzana.JavaVis.Representation.Graph.DirectedGraphNode;
 import com.smanzana.JavaVis.Representation.Tree.Tree;
@@ -71,7 +72,9 @@ public final class Driver {
 		//webViz.Visualize(VisualizationType.IMPLEMENTS, implementGraph);
 		
 		JungVisualization jvis = new JungVisualization();
-		jvis.Visualize(implementGraph);
+		jvis.provideRepresentation(RepresentationType.implement, implementGraph);
+		jvis.provideRepresentation(RepresentationType.extend, extendTree);
+		jvis.Visualize();
 	}
 	
 	
