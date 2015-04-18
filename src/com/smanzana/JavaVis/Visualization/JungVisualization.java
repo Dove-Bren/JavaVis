@@ -34,6 +34,8 @@ import edu.uci.ics.jung.visualization.control.AbstractPopupGraphMousePlugin;
 import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse.Mode;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
+import edu.uci.ics.jung.visualization.picking.PickedInfo;
+import edu.uci.ics.jung.visualization.picking.PickedState;
 
 public class JungVisualization {
 	
@@ -218,9 +220,12 @@ public class JungVisualization {
 		}
 		
 		GraphNode result = null;
+		PickedState<GraphNode> info = vv.getPickedVertexState();
 		for (GraphNode node : layout.getGraph().getVertices()) {
-			if (node.getCclass().getName().equals(searchTerm)) {
-				//vv.set
+			if (node.getCclass().getName().startsWith(searchTerm)) {
+				info.pick(node, true);
+			} else {
+				info.pick(node, false);
 			}
 		}
 	}
