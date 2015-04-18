@@ -17,6 +17,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
 import org.apache.commons.collections15.Transformer;
@@ -124,6 +126,52 @@ public class JungVisualization {
 			vis.Visualize(type);
 		}
 		
+	}
+	
+	private static final class InfoPanel extends JPanel {
+		
+		private JTextField title;
+		
+		private JTextField packageInfo;
+		
+		private JTextArea statInfo;
+		
+		public InfoPanel() {
+			super();
+			this.title = new JTextField();
+			this.packageInfo = new JTextField();
+			this.statInfo = new JTextArea();
+			
+			title.setEditable(false);
+			packageInfo.setEditable(false);
+			statInfo.setEditable(false);
+			
+
+		    setBorder(BorderFactory.createRaisedBevelBorder());
+		    setLayout(new BorderLayout());
+		    setPreferredSize(new Dimension(200,700));
+		    
+		    add(title, BorderLayout.PAGE_START);
+		    add(packageInfo, BorderLayout.AFTER_LINE_ENDS);
+		    add(statInfo, BorderLayout.AFTER_LINE_ENDS);
+
+		    
+		    setTitle("1");
+		    setPackageInfo("2");
+		    setStatInfo("3");
+		}
+		
+		public void setTitle(String title) {
+			this.title.setText(title);
+		}
+		
+		public void setPackageInfo(String info) {
+			this.packageInfo.setText(info);
+		}
+		
+		public void setStatInfo(String info) {
+			statInfo.setText(info);
+		}
 	}
 	
 	private JFrame window;
@@ -251,7 +299,7 @@ public class JungVisualization {
 		     
 		     //create mouse
 		     mouse = new DefaultModalGraphMouse<Cclass, Pair<Cclass, Cclass>>();
-		     mouse.setMode(Mode.TRANSFORMING);
+		     mouse.setMode(Mode.PICKING);
 		     //mouse.add(new BrushPlugin(this));
 		     vv.addKeyListener(mouse.getModeKeyListener());
 		     vv.setGraphMouse(mouse);
@@ -262,10 +310,7 @@ public class JungVisualization {
 		     JPanel content = new JPanel();
 		     content.setLayout(new BorderLayout());
 		     content.setBorder(BorderFactory.createLoweredBevelBorder());
-		     JPanel navigation = new JPanel();
-		     navigation.setBorder(BorderFactory.createRaisedBevelBorder());
-		     navigation.setLayout(new BorderLayout());
-		     navigation.setPreferredSize(new Dimension(200,700));
+		     JPanel navigation = new InfoPanel();
 		     
 		     //set up two nested frames
 		     window.getContentPane().setLayout(new BorderLayout());
