@@ -4,7 +4,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import com.smanzana.JavaVis.Parser.Wrappers.Cclass;
 import com.smanzana.JavaVis.Representation.DataRepresentation;
+import com.smanzana.JavaVis.Util.Pair;
 
 /**
  * Basic tree data structure with an undetermined number of children
@@ -27,13 +29,16 @@ public class Tree extends DataRepresentation {
 	
 	private String name;
 	
+	private Cclass cclass;
 	
-	public Tree(String name) {
+	
+	public Tree(Cclass cclass) {
 		this.parent = null;
 		this.children = new HashSet<Tree>();
 		this.depth = 0;
 		this.hDepth = 0;
-		this.name = name;
+		this.cclass = cclass;
+		this.name = cclass.getName();
 	}
 
 
@@ -163,6 +168,43 @@ public class Tree extends DataRepresentation {
 		}
 		
 		return out;
+	}
+	
+	public Cclass getCclass() {
+		return cclass;
+	}
+	
+	@Override
+	public Set<Cclass> getClasses() {
+		Set<Cclass> c = new HashSet<Cclass>();
+		
+		c.add(cclass);
+		
+		if (children.isEmpty()) {
+			return c;
+		}
+		
+		for (Tree child : children) {
+			c.addAll(child.getClasses());
+		}
+		
+		return c;
+	}
+	
+	@Override
+	public Set<Pair<Cclass, Cclass>> getPairs() {
+		Set<Pair<Cclass, Cclass>> pairs = new HashSet<Pair<Cclass, Cclass>>();
+		
+		if (children.isEmpty()) {
+			return pairs;
+		}
+		
+		for (Tree child : children) {
+			pairs.add(new Pair<Cclass, Cclass>(cclass, child.cclass));
+			pairs.addAll(child.getPairs());
+		}
+		
+		return pairs;
 	}
 	
 }

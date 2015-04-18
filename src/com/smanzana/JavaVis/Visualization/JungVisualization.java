@@ -7,6 +7,8 @@ import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.geom.Ellipse2D;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -19,11 +21,10 @@ import javax.swing.JToolBar;
 
 import org.apache.commons.collections15.Transformer;
 
-import com.smanzana.JavaVis.Representation.Graph.DirectedGraph;
-import com.smanzana.JavaVis.Representation.Graph.DirectedGraphNode;
-import com.smanzana.JavaVis.Representation.Graph.UndirectedWeightedEdge;
+import com.smanzana.JavaVis.Representation.DataRepresentation;
 import com.smanzana.JavaVis.Representation.Graph.Graph;
 import com.smanzana.JavaVis.Representation.Graph.GraphNode;
+import com.smanzana.JavaVis.Representation.Graph.UndirectedWeightedEdge;
 import com.smanzana.JavaVis.Representation.Tree.Tree;
 
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
@@ -107,7 +108,16 @@ public class JungVisualization {
 	private Layout<GraphNode, UndirectedWeightedEdge> layout;
 	
 	private DefaultModalGraphMouse<GraphNode, UndirectedWeightedEdge> mouse;
-
+	
+	private Map<DataRepresentation.RepresentationType, DataRepresentation> map;
+	
+	public JungVisualization() {
+		map = new HashMap<DataRepresentation.RepresentationType, DataRepresentation>();
+	}
+	
+	public void provideRepresentation(DataRepresentation.RepresentationType type, DataRepresentation data) {
+		map.put(type, data);
+	}
 	
 	public void Visualize(Graph graph) {
 		edu.uci.ics.jung.graph.Graph<GraphNode, UndirectedWeightedEdge> visGraph = new DirectedSparseGraph<GraphNode, UndirectedWeightedEdge>();

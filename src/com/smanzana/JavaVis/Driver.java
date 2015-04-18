@@ -212,7 +212,7 @@ public final class Driver {
 		
 		for (Cclass c : classes) {
 			//go through and create a tree for each class
-			treeMap.put(c, new Tree(c.toString()));
+			treeMap.put(c, new Tree(c));
 		}
 		
 
@@ -272,7 +272,7 @@ public final class Driver {
 				
 				//check to see if it's in our map. If not it's a ghost and needs a tree created for it
 				if (!treeMap.containsKey(parent)) {
-					treeMap.put(parent, new Tree(parent.toString()));
+					treeMap.put(parent, new Tree(parent));
 				}
 				
 				treeMap.get(c).setParent(treeMap.get(parent));
@@ -283,7 +283,7 @@ public final class Driver {
 		
 		//add a ghost class for the Object class
 		Cclass ob = new Cclass("Object", "java.lang");
-		Tree obTree = new Tree(ob.toString());
+		Tree obTree = new Tree(ob);
 		
 		//finally go and link all classes that don't have a parent to OBJECT, our root
 		for (Tree tree : treeMap.values()) {

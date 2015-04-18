@@ -1,8 +1,11 @@
 package com.smanzana.JavaVis.Representation.Graph;
 
+import java.util.HashSet;
 import java.util.Set;
 
+import com.smanzana.JavaVis.Parser.Wrappers.Cclass;
 import com.smanzana.JavaVis.Representation.DataRepresentation;
+import com.smanzana.JavaVis.Util.Pair;
 
 
 /**
@@ -135,5 +138,26 @@ public abstract class Graph extends DataRepresentation {
 	public abstract Set<UndirectedWeightedEdge> getEdges();
 	
 	public abstract Set<GraphNode> getNodes();
+	
+	public Set<Cclass> getClasses() {
+		Set<Cclass> c = new HashSet<Cclass>();
+		Set<GraphNode> nodes = getNodes();
+		for (GraphNode node : nodes) {
+			if (!(node.getCclass() == null)) {
+				c.add(node.cclass);
+			}
+		}
+		
+		return c;
+	}
+	
+	public Set<Pair<Cclass, Cclass>> getPairs() {
+		Set<Pair<Cclass, Cclass>> pairs = new HashSet<Pair<Cclass, Cclass>>();
+		for (UndirectedWeightedEdge e : getEdges()) {
+			pairs.add(new Pair<Cclass, Cclass>(e.getEnds().getLeft().getCclass(), e.getEnds().getRight().getCclass()));
+		}
+		
+		return pairs;
+	}
 	
 }
