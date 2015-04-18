@@ -11,10 +11,12 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JToolBar;
 
 import org.apache.commons.collections15.Transformer;
@@ -33,6 +35,7 @@ import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.control.AbstractPopupGraphMousePlugin;
 import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse.Mode;
+import edu.uci.ics.jung.visualization.control.PickingGraphMousePlugin;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 import edu.uci.ics.jung.visualization.picking.PickedState;
 
@@ -44,28 +47,41 @@ public class JungVisualization {
 	
 	private static final Paint enumColor = Color.RED;
 	
-	private static final class SearchPlugin extends AbstractPopupGraphMousePlugin {
-
-		@Override
-		protected void handlePopup(MouseEvent arg0) {
-			// TODO Auto-generated method stub
-			//JFrame popup = new JPopupMenu("Search");
-		}
-		
-		@Override
-		public void mouseReleased(MouseEvent e) {
-			if (e.getButton() == MouseEvent.BUTTON3) {
-				handlePopup(e);
-			}
-//			else {
-//				return;
-//			}
-		}
-		
-	}
+//	private static final class BrushPlugin extends PickingGraphMousePlugin<GraphNode, DirectedWeightedEdge> {
+//		
+//		JungVisualization vis;
+//		
+//		public BrushPlugin(JungVisualization vis) {
+//			this.vis = vis;
+//		}
+//		
+////		@Override
+////		public void mousePressed(MouseEvent ev) {
+////			super.mousePressed(ev);
+////			if (vertex == null && edge == null) {
+////				vis.vv.getPickedVertexState().clear();
+////				vis.vv.getPickedEdgeState().clear();
+////			}
+////		}
+//		
+////		@Override
+////		public void mouseReleased(MouseEvent ev) {
+////			super.mouseReleased(ev);
+////			if (vertex == null && edge == null) {
+////				vis.vv.getPickedVertexState().clear();
+////				vis.vv.getPickedEdgeState().clear();
+////			}
+////		}
+//		
+//	}
 	
 	private static final class SearchAction extends AbstractAction {
 		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		private JungVisualization vis;
 		
 		boolean enabled;
@@ -92,7 +108,7 @@ public class JungVisualization {
 	
 	private Layout<GraphNode, DirectedWeightedEdge> layout;
 	
-	private DefaultModalGraphMouse mouse;
+	private DefaultModalGraphMouse<GraphNode, DirectedWeightedEdge> mouse;
 
 	public void Visualize(Graph graph) {
 		// TODO Auto-generated method stub
@@ -188,22 +204,34 @@ public class JungVisualization {
 	     
 	     
 	     //create mouse
-	     mouse = new DefaultModalGraphMouse();
+	     mouse = new DefaultModalGraphMouse<GraphNode, DirectedWeightedEdge>();
 	     mouse.setMode(Mode.TRANSFORMING);
-	     mouse.add(new SearchPlugin());
+	     //mouse.add(new BrushPlugin(this));
 	     vv.addKeyListener(mouse.getModeKeyListener());
 	     vv.setGraphMouse(mouse);
 	     
-	     window = new JFrame("Simple Graph View");
+	     window = new JFrame("JavaVis Code Explorer");
 	     window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	     
+	     JPanel content = new JPanel();
+	     content.setLayout(new BorderLayout());
+	     content.setBorder(BorderFactory.createLoweredBevelBorder());
+	     JPanel navigation = new JPanel();
+	     navigation.setBorder(BorderFactory.createRaisedBevelBorder());
+	     navigation.setLayout(new BorderLayout());
+	     navigation.setPreferredSize(new Dimension(200,700));
+	     
+	     //set up two nested frames
+	     window.getContentPane().setLayout(new BorderLayout());
+	     window.getContentPane().add(content, BorderLayout.EAST);
+	     window.getContentPane().add(navigation, BorderLayout.WEST);
 	     
 
 	     JToolBar toolbar = new JToolBar();
 	     toolbar.add(new SearchAction(this));
-	     window.getContentPane().setLayout(new BorderLayout());
-	     window.getContentPane().add(toolbar, BorderLayout.PAGE_START);
+	     content.add(toolbar, BorderLayout.PAGE_START);
 	     
-	     window.getContentPane().add(vv, BorderLayout.CENTER); 
+	     content.add(vv, BorderLayout.CENTER); 
 	     
 
 	     
