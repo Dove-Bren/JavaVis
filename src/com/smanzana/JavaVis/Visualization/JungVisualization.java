@@ -4,17 +4,17 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Paint;
+import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeListener;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Point2D;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
 
 import org.apache.commons.collections15.Transformer;
@@ -34,7 +34,6 @@ import edu.uci.ics.jung.visualization.control.AbstractPopupGraphMousePlugin;
 import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse.Mode;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
-import edu.uci.ics.jung.visualization.picking.PickedInfo;
 import edu.uci.ics.jung.visualization.picking.PickedState;
 
 public class JungVisualization {
@@ -121,7 +120,7 @@ public class JungVisualization {
 	     Transformer<GraphNode,Paint> vertexPaint = new Transformer<GraphNode, Paint>() {
 	         public Paint transform(GraphNode node) {
 	        	 if (node == null || node.getCclass() == null) {
-	        		 return classColor;
+	        		 return Color.DARK_GRAY;
 	        	 }
 	             switch (node.getCclass().getType()) {
 	             case CLASS:
@@ -144,6 +143,26 @@ public class JungVisualization {
 	    	 }
 	     };
 	     
+	     Transformer<GraphNode, Shape> vertexShape = new Transformer<GraphNode, Shape>() {
+	    	public Shape transform(GraphNode node) {
+	    		if (node == null) {
+	    			return null;
+	    		}
+	    		
+	    		double size = 30;
+	    		
+	    		if (node.getCclass() == null) {
+	    			size = size / 2;
+	    		} else if (vv.getPickedVertexState().isPicked(node)) {
+	    			size = size * 1.25;
+	    		}
+	    		
+	    		Point2D point = layout.transform(node);
+	    		//return new Ellipse2D.Double(point.getX() - size/2, point.getY() - size/2, size, size);
+	    		return new Ellipse2D.Double(-size/2, -size/2, size, size);
+	    	}
+	     };
+	     
 //	     Transformer<GraphNode, String> vertexTooltip = new Transformer<GraphNode, String>(){
 //	    	public String transform(GraphNode node) {
 //	    		if (node == null || node.getCclass() == null) {
@@ -162,6 +181,7 @@ public class JungVisualization {
 	     vv.getRenderContext().setVertexFillPaintTransformer(vertexPaint);
 	     vv.setVertexToolTipTransformer(new ToStringLabeller<GraphNode>());
 	     vv.getRenderContext().setVertexLabelTransformer(vertexLabel);
+	     vv.getRenderContext().setVertexShapeTransformer(vertexShape);
 	     //vv.getRenderContext().setVer(vertexTooltip);
 	     
 	     
