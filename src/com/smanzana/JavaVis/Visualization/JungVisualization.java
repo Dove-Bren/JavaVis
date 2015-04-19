@@ -448,6 +448,7 @@ public class JungVisualization {
 
 				@Override
 				public Paint transform(Pair<Cclass, Cclass> arg0) {
+					updateInfo();
 					if (vv.getPickedEdgeState().isPicked(arg0)) {
 						return Color.GREEN;
 					} else {
@@ -693,80 +694,130 @@ public class JungVisualization {
 	}
 	
 	private void updateInfo() {
+		if (!(vv.getPickedVertexState() == null) && !vv.getPickedVertexState().getPicked().isEmpty()) {
+			updateVertices();
+		} else if (!(vv.getPickedEdgeState() == null) && !vv.getPickedEdgeState().getPicked().isEmpty()) {
+			System.out.println("edges!");
+			updateEdges();
+		}
+		
 			
-			PickedState<Cclass> picks = vv.getPickedVertexState();
+
+	}
+	
+	private void updateVertices() {
+		PickedState<Cclass> picks = vv.getPickedVertexState();
+		
+		if (picks == null || picks.getPicked() == null || picks.getPicked().isEmpty()) {
+			return;
+		}
+		
+		if (picks.getSelectedObjects().length == 1) {
+			//only 1 thing selected
+			Cclass c = (Cclass) picks.getSelectedObjects()[0];
+			infoPanel.setTitle(c.getName());
+			infoPanel.setPackageInfo(c.getPackageName());
 			
-			if (picks == null || picks.getPicked() == null || picks.getPicked().isEmpty()) {
+			//gather some info first
+			//does this class extend anything?
+			ClassDeclaration decl = c.getDeclaration();
+			if (decl == null) {
 				return;
 			}
-			
-			if (picks.getSelectedObjects().length == 1) {
-				//only 1 thing selected
-				Cclass c = (Cclass) picks.getSelectedObjects()[0];
-				infoPanel.setTitle(c.getName());
-				infoPanel.setPackageInfo(c.getPackageName());
-				
-				//gather some info first
-				//does this class extend anything?
-				ClassDeclaration decl = c.getDeclaration();
-				if (decl == null) {
-					return;
-				}
-				int extendCount = (decl.getExtends() == null ? 1 : 0);
-				int implementCount = decl.getImplements().size();
-				infoPanel.setStatInfo("<" + decl.getType().toString() + ">\n " +
-				"Inherits from: " + (extendCount + implementCount) + (extendCount == 1 ? ", 1 of which it extends." : "") +
-				"\nContains " + c.getMethods().size() + " methods\n"
-						+ "");
-				return;
-			}
-			
-			String packageName = null;
-			int methodCount = 0;
-			
-			for (Cclass c : picks.getPicked()) {
-				if (packageName == null) {
-					packageName = c.getPackageName();
-				} else if (packageName.equals("") || !packageName.contains(".")) {
-					//wait until end
-				} else {
-					//get most common element
-					String newPack = "";
-					String[] parts = packageName.split("\\."), otherParts = c.getPackageName().split("\\.");
-					int i;
-					for (i = 0; i < parts.length; i++) {
-						if (i >= otherParts.length) {
-							//too far!
-							break;
-						}
-						if (parts[i].equals(otherParts[i])) {
-							if (i > 0) {
-								//not first matching part
-								newPack += ".";
-							}
-							newPack += parts[i];
-						} else {
-							break;
-						}
+			int extendCount = (decl.getExtends() == null ? 1 : 0);
+			int implementCount = decl.getImplements().size();
+			infoPanel.setStatInfo("<" + decl.getType().toString() + ">\n " +
+			"Inherits from: " + (extendCount + implementCount) + (extendCount == 1 ? ", 1 of which it extends." : "") +
+			"\nContains " + c.getMethods().size() + " methods\n"
+					+ "");
+			return;
+		}
+		
+		String packageName = null;
+		int methodCount = 0;
+		
+		for (Cclass c : picks.getPicked()) {
+			if (packageName == null) {
+				packageName = c.getPackageName();
+			} else if (packageName.equals("") || !packageName.contains(".")) {
+				//wait until end
+			} else {
+				//get most common element
+				String newPack = "";
+				String[] parts = packageName.split("\\."), otherParts = c.getPackageName().split("\\.");
+				int i;
+				for (i = 0; i < parts.length; i++) {
+					if (i >= otherParts.length) {
+						//too far!
+						break;
 					}
-					packageName = newPack;
+					if (parts[i].equals(otherParts[i])) {
+						if (i > 0) {
+							//not first matching part
+							newPack += ".";
+						}
+						newPack += parts[i];
+					} else {
+						break;
+					}
 				}
-				
-				methodCount += (c.getMethods() == null ? 0 : c.getMethods().size());
-			}
-
-			
-			//after all package name processing
-			//if it's "" we have no info
-			if (packageName == null || packageName.equals("")) {
-				packageName = "No Common Package!";
+				packageName = newPack;
 			}
 			
-			infoPanel.setPackageInfo(packageName);
-			infoPanel.setTitle("Selection");
-			infoPanel.setStatInfo("Selection contains:\n"
-					+ methodCount + " methods");
+			methodCount += (c.getMethods() == null ? 0 : c.getMethods().size());
+		}
 
+		
+		//after all package name processing
+		//if it's "" we have no info
+		if (packageName == null || packageName.equals("")) {
+			packageName = "No Common Package!";
+		}
+		
+		infoPanel.setPackageInfo(packageName);
+		infoPanel.setTitle("Selection");
+		infoPanel.setStatInfo("Selection contains:\n"
+				+ methodCount + " methods");
+	}
+	
+	
+	
+	
+	
+	
+	
+	private void updateEdges() {
+		PickedState<Pair<Cclass, Cclass>> picks = vv.getPickedEdgeState();
+		
+		if (picks == null || picks.getPicked() == null || picks.getPicked().isEmpty()) {
+			return;
+		}
+		
+		if (picks.getPicked().size() == 1) {
+			//only 1 thing selected
+			Pair<Cclass, Cclass> edge = picks.getPicked().iterator().next();
+			infoPanel.setTitle(edge.getLeft().getName() + " -> " + edge.getRight().getName());
+			infoPanel.setPackageInfo("");
+			
+			//what information do we want from the edges?
+			//TODO edge information
+			//maybe how many method calls in both direction. How many references in either direction.
+			infoPanel.setStatInfo("");
+			return;
+		}
+		
+		String packageName = null;
+		int methodCount = 0;
+		
+		for (Pair<Cclass, Cclass> pair : picks.getPicked()) {
+						
+			//methodCount += (c.getMethods() == null ? 0 : c.getMethods().size());
+		}
+		
+		infoPanel.setPackageInfo("");
+		infoPanel.setTitle("Selection");
+		//infoPanel.setStatInfo("Selection contains:\n"
+		//		+ methodCount + " methods");
 	}
 
 }
