@@ -21,7 +21,7 @@ public class Cclass {
 	}
 	
 	
-	private String name;
+	private java.lang.String name;
 	
 	private Type type;
 	
@@ -97,6 +97,10 @@ public class Cclass {
 	public void addMethod(Method meth) {
 		//not even once, kids
 		methods.add(meth);
+	}
+	
+	public void setReferences(Map<Cclass, Integer> refs) {
+		this.referenceMap = refs;
 	}
 	
 	/**

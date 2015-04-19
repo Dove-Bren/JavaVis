@@ -43,6 +43,10 @@ public class Import {
 		return packageName;
 	}
 	
+	public boolean matchSpec(String spec) {
+		return this.importSpec.equals(spec);
+	}
+	
 	
 	
 	

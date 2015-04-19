@@ -2,8 +2,10 @@ package com.smanzana.JavaVis.Parser;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -314,7 +316,194 @@ public class FileParser {
 
 		cl = new Cclass(decl, packageName, methods);
 		cl.setImports(imports);
+		cl.setReferences(getFormalReferences(cl, file));
 		return cl;
+	}
+	
+	public Map<Cclass, Integer> getFormalReferences(Cclass currentClass, File file) {
+		if (input == null) {
+			return null;
+		}
+		
+		
+		//set input to beginning of file
+		try {
+			if (input != null) {
+				input.close();
+			}
+			input = new Scanner(file);
+		} catch (FileNotFoundException e) {
+			System.err.println("FileParser's file cannot be found:  " + file.getName());
+			e.printStackTrace();
+			return null;
+		}
+		
+		Map<Cclass, Integer> refs = new HashMap<Cclass, Integer>();
+		
+		//need to get into class declaration before we start!
+		String line;
+		
+		//skip over package name
+		line = input.nextLine();
+		//get through all the inports
+		while (input.hasNext()) {
+			line = input.nextLine().trim();
+			if (line.isEmpty() || line.startsWith("/") || line.startsWith("*")) {
+				continue;
+			}
+			
+			//we're looking for imports, so as soon as we don't have one break and start next process
+			if (!line.startsWith("import ")) {
+				break;
+			}
+			
+			//starts with import
+		}
+		
+		//SUPER IMPORTANT PROGRAMMING NOTE LOGIC OMG ODNT FORGET
+		//line still has the last line. This should be the class declaration if our assumptions are correct
+		if (!(  (line.contains(" class ") || line.contains(" interface ") || line.contains(" enum "))  && !line.startsWith("*") && !line.startsWith("/"))) {
+			System.err.println("Error in assumption that after imports is the declaration!");
+			return null;		
+		}
+		
+		
+		
+		while (input.hasNextLine()) {
+			line = input.nextLine().trim();
+			
+			//skip comments
+			if (line.startsWith("//")) {
+				continue;
+			}
+			if (line.startsWith("/*")) {
+				//skip EVERYTHING until we find */
+				if (line.contains("*/")) {
+					continue;
+				}
+				while (!input.nextLine().contains("*/")) {
+					;
+				}
+			}
+			
+			if (line.endsWith(";")) {
+				//possible field
+				
+				if (line.contains("=")) {
+					line = line.split("=")[0].trim();
+				}
+				
+				//String left = line.split("=")[0].trim();
+				if (!line.contains("{")) {
+					//we have a field (reference!!!)
+					
+					//time for more leg work: how do we go about getting the object?
+					//we ignore preceding keywords and get first not keyword
+					//and then ignore any parameterization it has
+					String[] lineWords = line.split(" ");
+					for (String word : lineWords) {
+						if (ClassDeclaration.isModifier(word)) {
+							continue;
+						}
+						
+						//not modifier, and first at that
+						//must be our class
+						
+						//remove generics/parameterization
+						if (word.contains("<")) {
+							word = word.substring(0, word.indexOf("<"));
+						}
+						
+						//need package name
+						String pname;
+						
+						//this can either be inline with it, or pulled from imports. If not htere, same pack
+						if (word.contains(".")) {
+							//inline! //TODO WHAT IF IT's DataRepresentation.RepresentationType???
+							int pos = word.lastIndexOf(".");
+							pname = word.substring(0, pos);
+							word = word.substring(pos + 1);
+							System.out.println(pname + " - " + word);
+						} else if (currentClass.getImport(word) != null){
+							//found a matching import!
+							pname = currentClass.getImport(word).getPackageName();
+						} else {
+							//assume pname is same as current class
+							pname = currentClass.getPackageName();
+						}
+						
+						//create based on name and package name
+						Cclass refClass = new Cclass(word, pname);
+						
+						if (refs.containsKey(refClass)) {
+							refs.put(refClass, refs.get(refClass) + 1);
+						} else {
+							refs.put(refClass, 1);
+						}
+					}
+					
+					
+				}
+			}
+			
+			//we want to skip methods or inline declarations
+			if (line.contains("{")) {
+				//check that we don't immediately need to exit
+				if (!line.contains("}")) {
+					//if the line doesn't also close the program
+					//need to search multiple lines to find it
+
+					int braceCount = 1;
+					String newline;
+					while (input.hasNextLine() && braceCount != 0) {
+						newline = input.nextLine();
+						for (char c : newline.toCharArray()) {
+							if (c == '{') {
+								braceCount++;
+							} else if (c == '}') {
+								braceCount--;
+							}
+						}
+					}
+					
+				}
+			}
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		return refs;
+	}
+	
+	public Map<Cclass, Integer> getInformalReferences(File file) {
+		if (input == null) {
+			return null;
+		}
+		
+		
+		//set input to beginning of file
+		try {
+			if (input != null) {
+				input.close();
+			}
+			input = new Scanner(file);
+		} catch (FileNotFoundException e) {
+			System.err.println("FileParser's file cannot be found:  " + file.getName());
+			e.printStackTrace();
+			return null;
+		}
+		
+		Map<Cclass, Integer> refs = new HashMap<Cclass, Integer>();
+		
+		
+		
+		return refs;
 	}
 	
 }
