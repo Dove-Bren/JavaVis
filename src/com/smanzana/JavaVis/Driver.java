@@ -10,7 +10,6 @@ import java.util.Set;
 
 import com.smanzana.JavaVis.Parser.ClassDeclaration;
 import com.smanzana.JavaVis.Parser.FileParser;
-import com.smanzana.JavaVis.Parser.JSON;
 import com.smanzana.JavaVis.Parser.Wrappers.Cclass;
 import com.smanzana.JavaVis.Parser.Wrappers.Import;
 import com.smanzana.JavaVis.Representation.DataRepresentation.RepresentationType;
@@ -18,8 +17,6 @@ import com.smanzana.JavaVis.Representation.Graph.DirectedGraph;
 import com.smanzana.JavaVis.Representation.Graph.DirectedGraphNode;
 import com.smanzana.JavaVis.Representation.Tree.Tree;
 import com.smanzana.JavaVis.Visualization.JungVisualization;
-import com.smanzana.JavaVis.Visualization.WebVisualization;
-import com.smanzana.JavaVis.Visualization.WebVisualization.VisualizationType;
 
 /**
  * This class is the driver for the visualization. 

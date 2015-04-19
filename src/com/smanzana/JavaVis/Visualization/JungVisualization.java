@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,12 +38,9 @@ import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
-import edu.uci.ics.jung.visualization.control.AbstractGraphMousePlugin;
 import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse.Mode;
-import edu.uci.ics.jung.visualization.control.TranslatingGraphMousePlugin;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
-import edu.uci.ics.jung.visualization.picking.ClassicPickSupport;
 import edu.uci.ics.jung.visualization.picking.PickedState;
 
 public class JungVisualization {
@@ -74,100 +70,100 @@ public class JungVisualization {
 ////		}
 //		
 //		@Override
-	private static final class PickTatle extends ClassicPickSupport<Cclass, Pair<Cclass, Cclass>> {
-		
-		private JungVisualization vis;
-		
-		public PickTatle(JungVisualization vis) {
-			this.vis = vis;
-		}
-		
-		
-		//public void mouseReleased(MouseEvent ev) {
-		@Override
-		public Cclass getVertex(Layout<Cclass, Pair<Cclass, Cclass>> layout, double x, double y) {
-			return super.getVertex(layout, x, y);
-		}
-		
-		@Override
-		public Cclass getVertex(Layout<Cclass, Pair<Cclass, Cclass>> layout, double x, double y, double radius) {
-			Cclass result = super.getVertex(layout, x, y, radius);
-			//super.mouseReleased(ev);
-			PickedState<Cclass> picks = vis.vv.getPickedVertexState();
-			
-			if (picks == null || picks.getSelectedObjects() == null || picks.getSelectedObjects().length == 0) {
-				return result;
-			}
-			
-			if (picks.getSelectedObjects().length == 1) {
-				//only 1 thing selected
-				Cclass c = (Cclass) picks.getSelectedObjects()[0];
-				vis.infoPanel.setTitle(c.getName());
-				vis.infoPanel.setPackageInfo(c.getPackageName());
-				
-				//gather some info first
-				//does this class extend anything?
-				ClassDeclaration decl = c.getDeclaration();
-				if (decl == null) {
-					return result;
-				}
-				int extendCount = (decl.getExtends() == null ? 1 : 0);
-				int implementCount = decl.getImplements().size();
-				vis.infoPanel.setStatInfo("Inherits from: " + (extendCount + implementCount) + (extendCount == 1 ? ", 1 of which it extends." : "") +
-				"\nContains " + c.getMethods().size() + " methods\n"
-						+ "");
-				return result;
-			}
-			
-			String packageName = null;
-			int methodCount = 0;
-			
-			for (Cclass c : picks.getPicked()) {
-				if (packageName == null) {
-					packageName = c.getPackageName();
-				} else if (packageName.equals("") || !packageName.contains(".")) {
-					//wait until end
-				} else {
-					//get most common element
-					String newPack = "";
-					String part;
-					String[] parts = packageName.split("."), otherParts = c.getPackageName().split(".");
-					int i;
-					for (i = 0; i < parts.length; i++) {
-						if (i >= otherParts.length) {
-							//too far!
-							break;
-						}
-						if (parts[i].equals(otherParts[i])) {
-							newPack += parts[i];
-						} else {
-							break;
-						}
-					}
-					packageName = newPack;
-				}
-				
-				methodCount += (c.getMethods() == null ? 0 : c.getMethods().size());
-			}
-
-			
-			//after all package name processing
-			//if it's "" we have no info
-			if (packageName == null || packageName.equals("")) {
-				packageName = "No Common Package!";
-			}
-			
-			vis.infoPanel.setPackageInfo(packageName);
-			vis.infoPanel.setTitle("Selection");
-			vis.infoPanel.setStatInfo("Selection contains:\n"
-					+ methodCount + " methods");
-
-			
-			return result;
-		}
-		
-		
-	}
+//	private static final class PickTatle extends ClassicPickSupport<Cclass, Pair<Cclass, Cclass>> {
+//		
+//		private JungVisualization vis;
+//		
+//		public PickTatle(JungVisualization vis) {
+//			this.vis = vis;
+//		}
+//		
+//		
+//		//public void mouseReleased(MouseEvent ev) {
+//		@Override
+//		public Cclass getVertex(Layout<Cclass, Pair<Cclass, Cclass>> layout, double x, double y) {
+//			return super.getVertex(layout, x, y);
+//		}
+//		
+//		@Override
+//		public Cclass getVertex(Layout<Cclass, Pair<Cclass, Cclass>> layout, double x, double y, double radius) {
+//			Cclass result = super.getVertex(layout, x, y, radius);
+//			//super.mouseReleased(ev);
+//			PickedState<Cclass> picks = vis.vv.getPickedVertexState();
+//			
+//			if (picks == null || picks.getSelectedObjects() == null || picks.getSelectedObjects().length == 0) {
+//				return result;
+//			}
+//			
+//			if (picks.getSelectedObjects().length == 1) {
+//				//only 1 thing selected
+//				Cclass c = (Cclass) picks.getSelectedObjects()[0];
+//				vis.infoPanel.setTitle(c.getName());
+//				vis.infoPanel.setPackageInfo(c.getPackageName());
+//				
+//				//gather some info first
+//				//does this class extend anything?
+//				ClassDeclaration decl = c.getDeclaration();
+//				if (decl == null) {
+//					return result;
+//				}
+//				int extendCount = (decl.getExtends() == null ? 1 : 0);
+//				int implementCount = decl.getImplements().size();
+//				vis.infoPanel.setStatInfo("Inherits from: " + (extendCount + implementCount) + (extendCount == 1 ? ", 1 of which it extends." : "") +
+//				"\nContains " + c.getMethods().size() + " methods\n"
+//						+ "");
+//				return result;
+//			}
+//			
+//			String packageName = null;
+//			int methodCount = 0;
+//			
+//			for (Cclass c : picks.getPicked()) {
+//				if (packageName == null) {
+//					packageName = c.getPackageName();
+//				} else if (packageName.equals("") || !packageName.contains(".")) {
+//					//wait until end
+//				} else {
+//					//get most common element
+//					String newPack = "";
+//					String part;
+//					String[] parts = packageName.split("."), otherParts = c.getPackageName().split(".");
+//					int i;
+//					for (i = 0; i < parts.length; i++) {
+//						if (i >= otherParts.length) {
+//							//too far!
+//							break;
+//						}
+//						if (parts[i].equals(otherParts[i])) {
+//							newPack += parts[i];
+//						} else {
+//							break;
+//						}
+//					}
+//					packageName = newPack;
+//				}
+//				
+//				methodCount += (c.getMethods() == null ? 0 : c.getMethods().size());
+//			}
+//
+//			
+//			//after all package name processing
+//			//if it's "" we have no info
+//			if (packageName == null || packageName.equals("")) {
+//				packageName = "No Common Package!";
+//			}
+//			
+//			vis.infoPanel.setPackageInfo(packageName);
+//			vis.infoPanel.setTitle("Selection");
+//			vis.infoPanel.setStatInfo("Selection contains:\n"
+//					+ methodCount + " methods");
+//
+//			
+//			return result;
+//		}
+//		
+//		
+//	}
 	
 	
 	
@@ -226,6 +222,11 @@ public class JungVisualization {
 	
 	private static final class IncludeObjectAction extends AbstractAction {
 		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 852235214270217247L;
+
 		private JungVisualization vis;
 		
 		private AbstractButton but;
@@ -641,7 +642,6 @@ public class JungVisualization {
 				} else {
 					//get most common element
 					String newPack = "";
-					String part;
 					String[] parts = packageName.split("\\."), otherParts = c.getPackageName().split("\\.");
 					int i;
 					for (i = 0; i < parts.length; i++) {
