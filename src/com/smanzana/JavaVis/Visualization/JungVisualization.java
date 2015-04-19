@@ -51,11 +51,11 @@ import edu.uci.ics.jung.visualization.picking.PickedState;
 
 public class JungVisualization {
 	
-	private static final Paint classColor = Color.GREEN;
+	private static final Paint classColor = new Color(0, 20, 255);
 	
-	private static final Paint interfaceColor = Color.BLUE;
+	private static final Paint interfaceColor = new Color(0, 60, 60);
 	
-	private static final Paint enumColor = Color.RED;
+	private static final Paint enumColor = new Color(120, 0, 60);
 	
 //	private static final class SelectMousePlugin extends TranslatingGraphMousePlugin {
 //		
