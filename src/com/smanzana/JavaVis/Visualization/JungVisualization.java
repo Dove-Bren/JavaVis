@@ -12,9 +12,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.AbstractAction;
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -29,6 +31,7 @@ import org.apache.commons.collections15.Transformer;
 import com.smanzana.JavaVis.Parser.ClassDeclaration;
 import com.smanzana.JavaVis.Parser.Wrappers.Cclass;
 import com.smanzana.JavaVis.Representation.DataRepresentation;
+import com.smanzana.JavaVis.Representation.DataRepresentation.RepresentationType;
 import com.smanzana.JavaVis.Representation.Tree.Tree;
 import com.smanzana.JavaVis.Util.Pair;
 
@@ -221,6 +224,30 @@ public class JungVisualization {
 		
 	}
 	
+	private static final class IncludeObjectAction extends AbstractAction {
+		
+		private JungVisualization vis;
+		
+		private AbstractButton but;
+		
+		public IncludeObjectAction(JungVisualization vis, AbstractButton but) {
+			this.vis = vis;
+			this.but = but;
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			// TODO Auto-generated method stub
+			if (but.isSelected()) {
+				vis.includeObject = true;
+			} else {
+				vis.includeObject = false;
+			}
+			vis.Visualize(vis.lastType);
+		}
+		
+	}
+	
 	private static final class InfoPanel extends JPanel {
 		
 		/**
@@ -285,6 +312,8 @@ public class JungVisualization {
 	
 	private VisualizationViewer<Cclass, Pair<Cclass, Cclass>> vv;
 	
+	private RepresentationType lastType;
+	
 	private InfoPanel infoPanel;
 	
 	private Layout<Cclass, Pair<Cclass, Cclass>> layout;
@@ -293,8 +322,11 @@ public class JungVisualization {
 	
 	private Map<DataRepresentation.RepresentationType, DataRepresentation> map;
 	
+	private boolean includeObject;
+	
 	public JungVisualization() {
 		map = new HashMap<DataRepresentation.RepresentationType, DataRepresentation>();
+		includeObject = true;
 	}
 	
 	public void provideRepresentation(DataRepresentation.RepresentationType type, DataRepresentation data) {
@@ -316,17 +348,32 @@ public class JungVisualization {
 			type = map.keySet().iterator().next();
 		}
 		
+		lastType = type;
+		
 		DataRepresentation dataRep = map.get(type);
 		
 		edu.uci.ics.jung.graph.Graph<Cclass, Pair<Cclass, Cclass>> visGraph = new DirectedSparseGraph<Cclass, Pair<Cclass, Cclass>>();
 		
 		
-		
-		for (Cclass node : dataRep.getClasses()) {
-			visGraph.addVertex(node);
-		}
-		for (Pair<Cclass, Cclass> e : dataRep.getPairs()) {
-			visGraph.addEdge(e, e.getLeft(), e.getRight());
+		if (includeObject) {
+			for (Cclass node : dataRep.getClasses()) {
+				visGraph.addVertex(node);
+			}
+			for (Pair<Cclass, Cclass> e : dataRep.getPairs()) {
+				visGraph.addEdge(e, e.getLeft(), e.getRight());
+			}
+		} else {
+			for (Cclass node: dataRep.getClasses()) {
+				if (!(node.getPackageName() + "." + node.getName()).equals("java.lang.Object")) {
+					visGraph.addVertex(node);
+				}
+			}
+			for (Pair<Cclass, Cclass> e : dataRep.getPairs()) {
+				if ((e.getLeft().getPackageName() + "." + e.getLeft().getName()).equals("java.lang.Object") || (e.getRight().getPackageName() + "." + e.getRight().getName()).equals("java.lang.Object")) {
+					continue;
+				}
+					visGraph.addEdge(e, e.getLeft(), e.getRight());
+			}
 		}
 	
 	    //create layout based on current loaded visualization
@@ -456,6 +503,16 @@ public class JungVisualization {
 		     modeMenu.setIcon(null); // I'm using this in a main menu
 		     modeMenu.setPreferredSize(new Dimension(80,20)); // Change the size 
 		     menuBar.add(modeMenu);
+		     
+		     JMenu optionMenu = new JMenu();
+		     optionMenu.setText("Options");
+		     optionMenu.setIcon(null);
+		     JCheckBoxMenuItem includeObject = new JCheckBoxMenuItem("Include java.lang.Object");
+		     includeObject.setSelected(true);
+		     includeObject.setAction(new IncludeObjectAction(this, includeObject));
+		     includeObject.setText("Include java.lang.Object");
+		     optionMenu.add(includeObject);
+		     menuBar.add(optionMenu);
 		     
 		     window.setJMenuBar(menuBar);
 		     
