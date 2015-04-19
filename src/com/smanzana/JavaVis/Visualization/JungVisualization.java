@@ -277,7 +277,7 @@ public class JungVisualization {
 			}
 			
 			//vis.vv.setLayout(layout);
-			System.out.println("Got a switch to " + vis.layout.toString());
+			vis.vv.setGraphLayout(vis.layout);
 		}
 		
 	}
