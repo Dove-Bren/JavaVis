@@ -697,7 +697,6 @@ public class JungVisualization {
 		if (!(vv.getPickedVertexState() == null) && !vv.getPickedVertexState().getPicked().isEmpty()) {
 			updateVertices();
 		} else if (!(vv.getPickedEdgeState() == null) && !vv.getPickedEdgeState().getPicked().isEmpty()) {
-			System.out.println("edges!");
 			updateEdges();
 		}
 		
