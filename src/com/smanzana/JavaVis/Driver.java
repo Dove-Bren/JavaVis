@@ -66,7 +66,7 @@ public final class Driver {
 		Tree extendTree = classesAsExtendsTree(classes);
 		//TODO TEST
 		
-		
+		DirectedGraph referenceGraph = classesAsReferenceGraph(classes);
 		
 		//WebVisualization webViz = new WebVisualization();
 		//webViz.Visualize(VisualizationType.IMPLEMENTS, implementGraph);
@@ -74,6 +74,7 @@ public final class Driver {
 		JungVisualization jvis = new JungVisualization();
 		jvis.provideRepresentation(RepresentationType.implement, implementGraph);
 		jvis.provideRepresentation(RepresentationType.extend, extendTree);
+		jvis.provideRepresentation(RepresentationType.reference, referenceGraph);
 		jvis.Visualize();
 	}
 	

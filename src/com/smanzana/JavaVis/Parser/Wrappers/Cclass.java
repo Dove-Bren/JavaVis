@@ -53,7 +53,10 @@ public class Cclass {
 		
 		//name cleanup
 		if (name.endsWith("{")) {
-			name = name.substring(0, name.length() -1);
+			name = name.substring(0, name.length() -1).trim();
+		}
+		if (name.endsWith(";")) {
+			name = name.substring(0, name.length() -1).trim();
 		}
 				
 	}
