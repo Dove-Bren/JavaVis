@@ -427,7 +427,7 @@ public class JungVisualization {
 		    Transformer<Cclass,Paint> vertexPaint = new Transformer<Cclass, Paint>() {
 		         public Paint transform(Cclass node) {
 		        	 if (node == null) {
-		        		 return Color.DARK_GRAY;
+		        		 return Color.GRAY;
 		        	 }
 		             switch (node.getType()) {
 		             case CLASS:
@@ -440,6 +440,19 @@ public class JungVisualization {
 		             }
 		         }
 		     };  
+		     
+		     Transformer<Pair<Cclass, Cclass>, Paint> edgePaint = new Transformer<Pair<Cclass, Cclass>, Paint>() {
+
+				@Override
+				public Paint transform(Pair<Cclass, Cclass> arg0) {
+					if (vv.getPickedEdgeState().isPicked(arg0)) {
+						return Color.GREEN;
+					} else {
+						return Color.WHITE;
+					}
+				}
+		    	 
+		     };
 		     
 		     Transformer<Cclass, String> vertexLabel = new Transformer<Cclass, String>() {
 		    	 public String transform(Cclass node) {
@@ -488,6 +501,8 @@ public class JungVisualization {
 		     vv.setVertexToolTipTransformer(new ToStringLabeller<Cclass>());
 		     vv.getRenderContext().setVertexLabelTransformer(vertexLabel);
 		     vv.getRenderContext().setVertexShapeTransformer(vertexShape);
+		     vv.getRenderContext().setEdgeDrawPaintTransformer(edgePaint);
+		     vv.getRenderContext().setArrowDrawPaintTransformer(edgePaint);
 		     //vv.getRenderContext().setVer(vertexTooltip);
 		     
 		     
@@ -519,7 +534,7 @@ public class JungVisualization {
 		     JToolBar toolbar = new JToolBar();
 		     toolbar.add(new SearchAction(this));
 		     content.add(toolbar, BorderLayout.PAGE_START);
-		     
+		     vv.setBackground(Color.BLACK);
 		     content.add(vv, BorderLayout.CENTER); 
 		     
 
@@ -692,7 +707,8 @@ public class JungVisualization {
 				}
 				int extendCount = (decl.getExtends() == null ? 1 : 0);
 				int implementCount = decl.getImplements().size();
-				infoPanel.setStatInfo("Inherits from: " + (extendCount + implementCount) + (extendCount == 1 ? ", 1 of which it extends." : "") +
+				infoPanel.setStatInfo("<" + decl.getType().toString() + ">\n " +
+				"Inherits from: " + (extendCount + implementCount) + (extendCount == 1 ? ", 1 of which it extends." : "") +
 				"\nContains " + c.getMethods().size() + " methods\n"
 						+ "");
 				return;
