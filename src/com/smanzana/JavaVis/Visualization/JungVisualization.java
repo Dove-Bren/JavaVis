@@ -3,6 +3,7 @@ package com.smanzana.JavaVis.Visualization;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
@@ -27,6 +28,7 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
 
 import org.apache.commons.collections15.Transformer;
 
@@ -48,6 +50,7 @@ import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse.Mode;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 import edu.uci.ics.jung.visualization.picking.PickedState;
+import edu.uci.ics.jung.visualization.renderers.DefaultVertexLabelRenderer;
 
 public class JungVisualization {
 	
@@ -496,6 +499,9 @@ public class JungVisualization {
 //		    		return str;
 //		    	}
 //		     };
+		     DefaultVertexLabelRenderer rend = new DefaultVertexLabelRenderer(new Color(180, 255, 180));
+		     rend.setHorizontalAlignment(SwingConstants.RIGHT);
+		     rend.setHorizontalTextPosition(SwingConstants.RIGHT);
 		     
 		     vv.getRenderContext().setVertexFillPaintTransformer(vertexPaint);
 		     vv.setVertexToolTipTransformer(new ToStringLabeller<Cclass>());
@@ -503,7 +509,8 @@ public class JungVisualization {
 		     vv.getRenderContext().setVertexShapeTransformer(vertexShape);
 		     vv.getRenderContext().setEdgeDrawPaintTransformer(edgePaint);
 		     vv.getRenderContext().setArrowDrawPaintTransformer(edgePaint);
-		     //vv.getRenderContext().setVer(vertexTooltip);
+		     
+		     vv.getRenderContext().setVertexLabelRenderer(rend);
 		     
 		     
 		     //create mouse
