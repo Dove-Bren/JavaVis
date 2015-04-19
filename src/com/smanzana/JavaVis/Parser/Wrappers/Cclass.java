@@ -1,7 +1,9 @@
 package com.smanzana.JavaVis.Parser.Wrappers;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import com.smanzana.JavaVis.Parser.ClassDeclaration;
 
@@ -31,6 +33,8 @@ public class Cclass {
 	
 	private ClassDeclaration declaration;
 	
+	private Map<Cclass, Integer> referenceMap;
+	
 	public Cclass(String name, Type type, ClassDeclaration decl, String packageName, List<Method> methods) {
 		
 		this.declaration = decl;
@@ -45,6 +49,7 @@ public class Cclass {
 		}
 		
 		imports = new LinkedList<Import>();
+		referenceMap = new HashMap<Cclass, Integer>();
 				
 	}
 	
@@ -92,6 +97,29 @@ public class Cclass {
 	public void addMethod(Method meth) {
 		//not even once, kids
 		methods.add(meth);
+	}
+	
+	/**
+	 * increment count of references from the current class to the passed class
+	 */
+	public void addReference(Cclass cclass) {
+		if (referenceMap.containsKey(cclass)) {
+			referenceMap.put(cclass, referenceMap.get(cclass) + 1);
+		} else {
+			referenceMap.put(cclass, 1);
+		}
+	}
+	
+	public int getReferenceCount(Cclass cclass) {
+		if (referenceMap.containsKey(cclass)) {
+			return referenceMap.get(cclass);
+		} else {
+			return 0;
+		}
+	}
+	
+	public Map<Cclass, Integer> getReferenceMap() {
+		return referenceMap;
 	}
 	
 	
