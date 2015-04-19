@@ -40,6 +40,7 @@ import com.smanzana.JavaVis.Util.Pair;
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
+import edu.uci.ics.jung.algorithms.layout.SpringLayout;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
@@ -410,9 +411,13 @@ public class JungVisualization {
 			}
 		}
 	
-	    //create layout based on current loaded visualization
-	    layout = new CircleLayout<Cclass, Pair<Cclass, Cclass>>(visGraph);
-	    layout.setSize(new Dimension(600,600));
+	    //create layout if we don't alrady have one
+		if (layout == null) {
+		    layout = new CircleLayout<Cclass, Pair<Cclass, Cclass>>(visGraph);
+		    layout.setSize(new Dimension(600,600));
+		} else {
+			layout.setGraph(visGraph);
+		}
 	    
 	    //create a visualizatoin viewer if we don't have one, or update current with new type
 	    if (vv == null) {
@@ -557,6 +562,13 @@ public class JungVisualization {
 		     	group.add(layoutBut);
 		     	layoutMenu.add(layoutBut);
 		     	layoutBut.setText("Force Directed");
+		     	
+		     	layoutBut = new JRadioButtonMenuItem("Spring");
+		     	layoutBut.setSelected(false);
+		     	layoutBut.setAction(new LayoutAction(this, SpringLayout.class));
+		     	group.add(layoutBut);
+		     	layoutMenu.add(layoutBut);
+		     	layoutBut.setText("Spring");
 		     
 		     menuBar.add(layoutMenu);
 		     
