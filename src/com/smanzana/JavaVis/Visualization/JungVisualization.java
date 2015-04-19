@@ -585,17 +585,21 @@ public class JungVisualization {
 					//get most common element
 					String newPack = "";
 					String part;
-					String[] parts = packageName.split("."), otherParts = c.getPackageName().split(".");
+					String[] parts = packageName.split("\\."), otherParts = c.getPackageName().split("\\.");
 					int i;
 					for (i = 0; i < parts.length; i++) {
 						if (i >= otherParts.length) {
 							//too far!
-							return;
+							break;
 						}
 						if (parts[i].equals(otherParts[i])) {
+							if (i > 0) {
+								//not first matching part
+								newPack += ".";
+							}
 							newPack += parts[i];
 						} else {
-							return;
+							break;
 						}
 					}
 					packageName = newPack;
