@@ -7,6 +7,7 @@ import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.geom.Ellipse2D;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,12 +16,14 @@ import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
@@ -35,8 +38,10 @@ import com.smanzana.JavaVis.Representation.Tree.Tree;
 import com.smanzana.JavaVis.Util.Pair;
 
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
+import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
+import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse.Mode;
@@ -245,6 +250,34 @@ public class JungVisualization {
 				vis.includeObject = false;
 			}
 			vis.Visualize(vis.lastType);
+		}
+		
+	}
+	
+	private static final class LayoutAction extends AbstractAction{
+		
+		JungVisualization vis;
+		
+		Class<? extends Layout<Cclass, Pair<Cclass, Cclass>>> layoutClass;
+		
+		public LayoutAction(JungVisualization vis, Class<? extends Layout> layoutClass) {
+			this.vis = vis;
+			this.layoutClass = (Class<Layout<Cclass, Pair<Cclass, Cclass>>>)layoutClass;
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			try {
+				vis.layout = layoutClass.getConstructor( (Class<Graph<Cclass, Pair<Cclass, Cclass>>>)(Class<?>)Graph.class  ).newInstance(vis.layout.getGraph());
+			} catch (InstantiationException | IllegalAccessException
+					| IllegalArgumentException | InvocationTargetException
+					| NoSuchMethodException | SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			//vis.vv.setLayout(layout);
+			System.out.println("Got a switch to " + vis.layout.toString());
 		}
 		
 	}
@@ -504,6 +537,27 @@ public class JungVisualization {
 		     modeMenu.setIcon(null); // I'm using this in a main menu
 		     modeMenu.setPreferredSize(new Dimension(80,20)); // Change the size 
 		     menuBar.add(modeMenu);
+		     
+		     JMenu layoutMenu = new JMenu();
+		     layoutMenu.setText("Layout");
+		     layoutMenu.setIcon(null);
+		     JRadioButtonMenuItem layoutBut;
+		     ButtonGroup group = new ButtonGroup();
+		     	layoutBut = new JRadioButtonMenuItem("Circle");
+		     	//layoutBut.setText("Circle");
+		     	layoutBut.setSelected(true);
+		     	layoutBut.setAction(new LayoutAction(this, CircleLayout.class));
+		     	group.add(layoutBut);
+		     	layoutMenu.add(layoutBut);
+		     	
+		     	layoutBut = new JRadioButtonMenuItem("Force Directed");
+		     	//layoutBut.setText("Force Directed");
+		     	layoutBut.setSelected(false);
+		     	layoutBut.setAction(new LayoutAction(this, FRLayout.class));
+		     	group.add(layoutBut);
+		     	layoutMenu.add(layoutBut);
+		     
+		     menuBar.add(layoutMenu);
 		     
 		     JMenu optionMenu = new JMenu();
 		     optionMenu.setText("Options");
