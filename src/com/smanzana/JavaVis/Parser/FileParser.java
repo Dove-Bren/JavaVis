@@ -316,7 +316,7 @@ public class FileParser {
 
 		cl = new Cclass(decl, packageName, methods);
 		cl.setImports(imports);
-		cl.setReferences(getFormalReferences(cl, file));
+		cl.setFormalReferences(getFormalReferences(cl, file));
 		return cl;
 	}
 	

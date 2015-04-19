@@ -33,7 +33,7 @@ public class Cclass {
 	
 	private ClassDeclaration declaration;
 	
-	private Map<Cclass, Integer> referenceMap;
+	private Map<Cclass, Integer> formalReferenceMap;
 	
 	public Cclass(String name, Type type, ClassDeclaration decl, String packageName, List<Method> methods) {
 		
@@ -49,7 +49,7 @@ public class Cclass {
 		}
 		
 		imports = new LinkedList<Import>();
-		referenceMap = new HashMap<Cclass, Integer>();
+		formalReferenceMap = new HashMap<Cclass, Integer>();
 				
 	}
 	
@@ -99,31 +99,31 @@ public class Cclass {
 		methods.add(meth);
 	}
 	
-	public void setReferences(Map<Cclass, Integer> refs) {
-		this.referenceMap = refs;
+	public void setFormalReferences(Map<Cclass, Integer> refs) {
+		this.formalReferenceMap = refs;
 	}
 	
 	/**
 	 * increment count of references from the current class to the passed class
 	 */
-	public void addReference(Cclass cclass) {
-		if (referenceMap.containsKey(cclass)) {
-			referenceMap.put(cclass, referenceMap.get(cclass) + 1);
+	public void addFormalReference(Cclass cclass) {
+		if (formalReferenceMap.containsKey(cclass)) {
+			formalReferenceMap.put(cclass, formalReferenceMap.get(cclass) + 1);
 		} else {
-			referenceMap.put(cclass, 1);
+			formalReferenceMap.put(cclass, 1);
 		}
 	}
 	
-	public int getReferenceCount(Cclass cclass) {
-		if (referenceMap.containsKey(cclass)) {
-			return referenceMap.get(cclass);
+	public int getFormalReferenceCount(Cclass cclass) {
+		if (formalReferenceMap.containsKey(cclass)) {
+			return formalReferenceMap.get(cclass);
 		} else {
 			return 0;
 		}
 	}
 	
 	public Map<Cclass, Integer> getReferenceMap() {
-		return referenceMap;
+		return formalReferenceMap;
 	}
 	
 	
