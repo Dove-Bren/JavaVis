@@ -15,6 +15,9 @@ import com.smanzana.JavaVis.Parser.Wrappers.Import;
 import com.smanzana.JavaVis.Representation.DataRepresentation.RepresentationType;
 import com.smanzana.JavaVis.Representation.Graph.DirectedGraph;
 import com.smanzana.JavaVis.Representation.Graph.DirectedGraphNode;
+import com.smanzana.JavaVis.Representation.Graph.DirectedWeightedEdge;
+import com.smanzana.JavaVis.Representation.Graph.GraphNode;
+import com.smanzana.JavaVis.Representation.Graph.UndirectedGraph;
 import com.smanzana.JavaVis.Representation.Tree.Tree;
 import com.smanzana.JavaVis.Visualization.JungVisualization;
 
@@ -294,6 +297,40 @@ public final class Driver {
 		
 		
 		return obTree;
+	}
+	
+	private static DirectedGraph classesAsReferenceGraph(Set<Cclass> classes) {
+		
+		if (classes == null || classes.isEmpty()) {
+			return null;
+		}
+		
+		//also a naive approach, add all classes as nodes and then do edges
+		Map<Cclass, DirectedGraphNode> nodeMap = new HashMap<Cclass, DirectedGraphNode>();
+		DirectedGraph graph = new DirectedGraph();
+		
+		for (Cclass c : classes) {
+			//go through and create and add each class/vertex to the graph
+			DirectedGraphNode n = new DirectedGraphNode(c);
+			graph.addNode(n);
+			if (!nodeMap.containsKey(c)) {
+				nodeMap.put(c, n);
+			}
+			
+			for (Cclass refClass : c.getFormalReferenceMap().keySet()) {
+				DirectedGraphNode mN, rN;
+				mN = n;
+				rN = nodeMap.get(refClass);
+				if (rN == null) {
+					rN = new DirectedGraphNode(refClass);
+					nodeMap.put(refClass, rN);
+				}
+				n.addEdge(rN, c.getFormalReferenceCount(refClass));
+			}
+		}
+		
+		
+		return graph;
 	}
 	
 	/**

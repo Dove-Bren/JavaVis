@@ -127,7 +127,7 @@ public class Cclass {
 		}
 	}
 	
-	public Map<Cclass, Integer> getReferenceMap() {
+	public Map<Cclass, Integer> getFormalReferenceMap() {
 		return formalReferenceMap;
 	}
 	

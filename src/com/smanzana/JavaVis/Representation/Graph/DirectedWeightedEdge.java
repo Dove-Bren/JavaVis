@@ -5,7 +5,17 @@ import com.smanzana.JavaVis.Util.Pair;
 public class DirectedWeightedEdge extends UndirectedWeightedEdge{
 	
 	public DirectedWeightedEdge(DirectedGraphNode source, DirectedGraphNode dest) {
-		this.weight = 1.0;
+		this(source, dest, 1.0);
+	}
+	
+	/**
+	 * 
+	 * @param source
+	 * @param dest
+	 * @param weight
+	 */
+	public DirectedWeightedEdge(DirectedGraphNode source, DirectedGraphNode dest, double weight) {
+		this.weight = weight;
 		this.ends = new Pair<GraphNode, GraphNode>(source, dest);
 	}
 	

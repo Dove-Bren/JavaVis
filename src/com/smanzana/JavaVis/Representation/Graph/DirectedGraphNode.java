@@ -47,10 +47,14 @@ public class DirectedGraphNode extends GraphNode{
 	}
 	
 	public boolean addEdge(DirectedGraphNode to) {
+		return addEdge(to, 1.0);
+	}
+	
+	public boolean addEdge(DirectedGraphNode to, double weight) {
 		DirectedWeightedEdge edge = new DirectedWeightedEdge(this, to);
 		
 		return edges.add(edge);
-		}
+	}
 	
 	
 	
