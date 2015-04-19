@@ -544,18 +544,19 @@ public class JungVisualization {
 		     JRadioButtonMenuItem layoutBut;
 		     ButtonGroup group = new ButtonGroup();
 		     	layoutBut = new JRadioButtonMenuItem("Circle");
-		     	//layoutBut.setText("Circle");
 		     	layoutBut.setSelected(true);
 		     	layoutBut.setAction(new LayoutAction(this, CircleLayout.class));
+		     	layoutBut.setIcon(null);
+		     	layoutBut.setText("Circle");
 		     	group.add(layoutBut);
 		     	layoutMenu.add(layoutBut);
 		     	
 		     	layoutBut = new JRadioButtonMenuItem("Force Directed");
-		     	//layoutBut.setText("Force Directed");
 		     	layoutBut.setSelected(false);
 		     	layoutBut.setAction(new LayoutAction(this, FRLayout.class));
 		     	group.add(layoutBut);
 		     	layoutMenu.add(layoutBut);
+		     	layoutBut.setText("Force Directed");
 		     
 		     menuBar.add(layoutMenu);
 		     
