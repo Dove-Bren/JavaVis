@@ -6,6 +6,8 @@ import java.util.Set;
 public final class JavaLangDictionary {
 	
 	public static Set<String> langDictionary;
+	
+	private static void init()
 	{
 		langDictionary = new HashSet<String>(); 
 		langDictionary.add("Appendable");//96
@@ -57,6 +59,9 @@ public final class JavaLangDictionary {
 	 * @return
 	 */
 	public static boolean isJavaLang(String className) {
+		if (langDictionary == null) {
+			init();
+		}
 		return langDictionary.contains(className);
 	}
 }

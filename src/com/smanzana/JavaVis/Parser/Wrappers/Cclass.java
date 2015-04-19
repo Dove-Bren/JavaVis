@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.smanzana.JavaVis.Parser.ClassDeclaration;
+import com.smanzana.JavaVis.Parser.JavaLangDictionary;
 
 /**
  * Represents a class lulz 
@@ -164,6 +165,9 @@ public class Cclass {
 			}
 			//we also need to be wary of import java.util.*'s
 			//TODO figure out if there's any way to do this... darn it!
+			if (JavaLangDictionary.isJavaLang(localName)) {
+				return new Import("java.lang." + localName);
+			}
 			
 		}
 		return null;
