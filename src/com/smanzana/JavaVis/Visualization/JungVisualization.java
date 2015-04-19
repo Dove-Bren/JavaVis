@@ -486,6 +486,16 @@ public class JungVisualization {
 		    	}
 		     };
 		     
+		     Transformer<Cclass, Paint> vertexOutline = new Transformer<Cclass, Paint>() {
+		    	 public Paint transform(Cclass node) {
+		    		if (vv.getPickedVertexState().isPicked(node)) {
+		    			return Color.GREEN;
+		    		} else {
+		    			return Color.BLACK;
+		    		}
+		    	 }
+		     };
+		     
 //		     Transformer<GraphNode, String> vertexTooltip = new Transformer<GraphNode, String>(){
 //		    	public String transform(GraphNode node) {
 //		    		if (node == null || node.getCclass() == null) {
@@ -510,17 +520,18 @@ public class JungVisualization {
 		     vv.getRenderContext().setVertexShapeTransformer(vertexShape);
 		     vv.getRenderContext().setEdgeDrawPaintTransformer(edgePaint);
 		     vv.getRenderContext().setArrowDrawPaintTransformer(edgePaint);
+		     vv.getRenderContext().setVertexDrawPaintTransformer(vertexOutline);
 		     
 		     vv.getRenderContext().setVertexLabelRenderer(rend);
 		     
 		     
 		     //create mouse
 		     mouse = new DefaultModalGraphMouse<Cclass, Pair<Cclass, Cclass>>();
-		     mouse.setMode(Mode.PICKING);
 		     //mouse.add(new SelectMousePlugin(this));
 		     //mouse.add(new BrushPlugin(this));
 		     vv.addKeyListener(mouse.getModeKeyListener());
 		     vv.setGraphMouse(mouse);
+		     mouse.setMode(Mode.PICKING);
 		     
 		     //vv.setPickSupport(new PickTatle(this));
 		     
@@ -565,6 +576,7 @@ public class JungVisualization {
 		     modeMenu.setIcon(null); // I'm using this in a main menu
 		     modeMenu.setPreferredSize(new Dimension(80,20)); // Change the size 
 		     menuBar.add(modeMenu);
+		     mouse.setMode(Mode.PICKING);
 		     
 		     JMenu layoutMenu = new JMenu();
 		     layoutMenu.setText("Layout");
