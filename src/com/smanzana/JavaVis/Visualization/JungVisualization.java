@@ -12,6 +12,8 @@ import java.util.Map;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -130,6 +132,11 @@ public class JungVisualization {
 	
 	private static final class InfoPanel extends JPanel {
 		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		private JTextField title;
 		
 		private JTextField packageInfo;
@@ -143,22 +150,26 @@ public class JungVisualization {
 			this.statInfo = new JTextArea();
 			
 			title.setEditable(false);
+			title.setMaximumSize(new Dimension(200, 75));
 			packageInfo.setEditable(false);
+			packageInfo.setMaximumSize(new Dimension(200, 50));
 			statInfo.setEditable(false);
+			statInfo.setMaximumSize(new Dimension(200, 600));
 			
 
 		    setBorder(BorderFactory.createRaisedBevelBorder());
-		    setLayout(new BorderLayout());
+		    setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+		    
+		    add(title);
+		    add(packageInfo);
+		    add(statInfo);
+		    add(Box.createVerticalGlue());
+
 		    setPreferredSize(new Dimension(200,700));
 		    
-		    add(title, BorderLayout.PAGE_START);
-		    add(packageInfo, BorderLayout.AFTER_LINE_ENDS);
-		    add(statInfo, BorderLayout.AFTER_LINE_ENDS);
-
-		    
-		    setTitle("1");
-		    setPackageInfo("2");
-		    setStatInfo("3");
+		    setTitle("");
+		    setPackageInfo("");
+		    setStatInfo("Pick a node on the right to see more information");
 		}
 		
 		public void setTitle(String title) {
