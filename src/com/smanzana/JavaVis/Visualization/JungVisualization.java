@@ -3,7 +3,6 @@ package com.smanzana.JavaVis.Visualization;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
@@ -260,15 +259,22 @@ public class JungVisualization {
 	
 	private static final class LayoutAction extends AbstractAction{
 		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		JungVisualization vis;
 		
 		Class<? extends Layout<Cclass, Pair<Cclass, Cclass>>> layoutClass;
 		
-		public LayoutAction(JungVisualization vis, Class<? extends Layout> layoutClass) {
+		@SuppressWarnings("unchecked")
+		public LayoutAction(JungVisualization vis, @SuppressWarnings("rawtypes") Class<? extends Layout> layoutClass) {
 			this.vis = vis;
 			this.layoutClass = (Class<Layout<Cclass, Pair<Cclass, Cclass>>>)layoutClass;
 		}
 		
+		@SuppressWarnings("unchecked")
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			try {
@@ -813,7 +819,14 @@ public class JungVisualization {
 			//what information do we want from the edges?
 			//TODO edge information
 			//maybe how many method calls in both direction. How many references in either direction.
-			infoPanel.setStatInfo("");
+			infoPanel.setStatInfo(edge.getLeft().getName() + " holds " 
+					+ edge.getLeft().getFormalReferenceCount(edge.getRight()) + " references to "
+					+ edge.getRight().getName()
+					+"\n"
+					+ edge.getRight().getName() + " holds " 
+					+ edge.getRight().getFormalReferenceCount(edge.getLeft()) + " references to "
+					+ edge.getLeft().getName()					
+					);
 			return;
 		}
 		

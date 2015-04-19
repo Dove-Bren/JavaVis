@@ -39,7 +39,7 @@ public class Cclass {
 		
 		this.declaration = decl;
 		this.type = type;
-		this.name = name;
+		this.name = name.trim();
 		this.packageName = packageName;
 		
 		this.methods = methods;
@@ -50,6 +50,11 @@ public class Cclass {
 		
 		imports = new LinkedList<Import>();
 		formalReferenceMap = new HashMap<Cclass, Integer>();
+		
+		//name cleanup
+		if (name.endsWith("{")) {
+			name = name.substring(0, name.length() -1);
+		}
 				
 	}
 	
