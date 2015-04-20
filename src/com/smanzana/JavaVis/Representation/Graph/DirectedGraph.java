@@ -108,12 +108,11 @@ public class DirectedGraph extends Graph {
 		}
 		
 		//not a directed graph. how about a tree?
-		if (data instanceof Tree) {
+		//if (data instanceof Tree) {
 			//in luck, cause trees are directed!
-			Tree otherTree = (Tree) data;
-			Set<Cclass> myclasses = getClasses();
+			//Tree otherTree = (Tree) data;
 			//grab verticies, throw them in
-			for (Pair<Cclass, Cclass> pair : otherTree.getPairs()) {
+			for (Pair<Cclass, Cclass> pair : data.getPairs()) {
 				Cclass src = pair.getLeft();
 				Cclass dest = pair.getRight();
 				System.out.println("[" + src + "] - [" + dest + "]");
@@ -146,8 +145,9 @@ public class DirectedGraph extends Graph {
 				srcNode.addEdge(destNode);
 			}
 			
-			//now grab edges and attach them to nodes
-		}
+			
+		
+		//not a tree or a directed graph! Darn it! We'll go generic here.
 		
 	}
 	
