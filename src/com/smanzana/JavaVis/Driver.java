@@ -65,9 +65,9 @@ public final class Driver {
 		
 		DirectedGraph referenceGraph = classesAsReferenceGraph(classes);
 		
-		DirectedGraph allGraph = classesAsReferenceGraph(classes);
+		DirectedGraph allGraph = classesAsImplementsGraph(classes);
 		allGraph.mergeFrom(extendTree);
-		allGraph.mergeFrom(implementGraph);
+		allGraph.mergeFrom(referenceGraph);
 		
 		//WebVisualization webViz = new WebVisualization();
 		//webViz.Visualize(VisualizationType.IMPLEMENTS, implementGraph);
@@ -77,6 +77,8 @@ public final class Driver {
 		jvis.provideRepresentation(RepresentationType.extend, extendTree);
 		jvis.provideRepresentation(RepresentationType.reference, referenceGraph);
 		jvis.provideRepresentation(RepresentationType.all, allGraph);
+		jvis.provideRepresentation(RepresentationType.custom, null);
+		
 		jvis.Visualize();
 	}
 	

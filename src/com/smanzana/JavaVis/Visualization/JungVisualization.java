@@ -11,7 +11,10 @@ import java.awt.event.ActionEvent;
 import java.awt.geom.Ellipse2D;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
@@ -37,8 +40,8 @@ import com.smanzana.JavaVis.Parser.ClassDeclaration;
 import com.smanzana.JavaVis.Parser.Wrappers.Cclass;
 import com.smanzana.JavaVis.Representation.DataRepresentation;
 import com.smanzana.JavaVis.Representation.DataRepresentation.RepresentationType;
+import com.smanzana.JavaVis.Representation.Graph.DirectedGraph;
 import com.smanzana.JavaVis.Representation.Tree.Tree;
-import com.smanzana.JavaVis.Util.Pair;
 import com.smanzana.JavaVis.Util.WeightedPair;
 
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
@@ -225,6 +228,21 @@ public class JungVisualization {
 			if (vis == null || vis.vv == null) {
 				return;
 			}
+			 
+			for (JCheckBoxMenuItem but : vis.customButtons) {
+				but.setEnabled(type == RepresentationType.custom);
+			}
+			
+			if (type == RepresentationType.custom) {
+				DirectedGraph graph = new DirectedGraph();
+				for (RepresentationType type : vis.customEnabledTypes) {
+					graph.mergeFrom(vis.map.get(type));
+				}
+				
+				vis.map.put(RepresentationType.custom, graph);
+
+			}
+				
 			
 			vis.Visualize(type);
 		}
@@ -324,6 +342,50 @@ public class JungVisualization {
 		
 	}
 	
+	private static final class CustomOptionAction extends AbstractAction{
+		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		private JungVisualization vis;
+		
+		private RepresentationType type;
+		
+		private boolean activated = true; //default true
+		
+		public CustomOptionAction(JungVisualization vis, DataRepresentation.RepresentationType type) {
+			this.vis = vis;
+			this.type = type;
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			
+			if (activated) {
+				//was activated. turning off
+				activated = false;
+				vis.customEnabledTypes.remove(this.type);
+				
+			} else {
+				activated = true;
+				vis.customEnabledTypes.add(type);
+			}
+			
+			//regardless of if it's on or off, recreated visualization and display it
+			DirectedGraph graph = new DirectedGraph();
+			for (RepresentationType type : vis.customEnabledTypes) {
+				graph.mergeFrom(vis.map.get(type));
+			}
+			
+			vis.map.put(RepresentationType.custom, graph);
+
+			vis.Visualize(RepresentationType.custom);
+		}
+		
+	}
+	
 	private static final class InfoPanel extends JPanel {
 		
 		/**
@@ -392,6 +454,8 @@ public class JungVisualization {
 	
 	private InfoPanel infoPanel;
 	
+	private Set<JCheckBoxMenuItem> customButtons;
+	
 	private Layout<Cclass, WeightedPair<Cclass, Cclass>> layout;
 	
 	private DefaultModalGraphMouse<Cclass, WeightedPair<Cclass, Cclass>> mouse;
@@ -402,15 +466,20 @@ public class JungVisualization {
 	
 	private boolean edgeWeight;
 	
+	private Set<RepresentationType> customEnabledTypes;
+	
 	public JungVisualization() {
 		map = new HashMap<DataRepresentation.RepresentationType, DataRepresentation>();
 		includeObject = true;
 		edgeWeight = true;
+		customEnabledTypes = new HashSet<RepresentationType>();
+		customButtons = new HashSet<JCheckBoxMenuItem>();
 	}
 	
 	public void provideRepresentation(DataRepresentation.RepresentationType type, DataRepresentation data) {
 		map.put(type, data);
 	}
+	
 	
 	public void Visualize() {
 		Visualize( (DataRepresentation.RepresentationType) null);
@@ -425,6 +494,13 @@ public class JungVisualization {
 		
 		if (type == null) {
 			type = map.keySet().iterator().next();
+			if (type == RepresentationType.custom || type == RepresentationType.all) {
+				Iterator<RepresentationType> it = map.keySet().iterator();
+				
+				while (it.hasNext() && (type == RepresentationType.custom || type == RepresentationType.all)) {
+					type = it.next();
+				}
+			}
 		}
 		
 		lastType = type;
@@ -539,7 +615,10 @@ public class JungVisualization {
 		     
 		     Transformer<WeightedPair<Cclass, Cclass>, Stroke> edgeStroke = new Transformer<WeightedPair<Cclass, Cclass>, Stroke>() {
 		    	 public Stroke transform(WeightedPair<Cclass, Cclass> node) {
-		    		return new BasicStroke( (float) ((WeightedPair) node).getWeight());
+		    		 if (!edgeWeight) {
+		    			 return new BasicStroke(1.0f);
+		    		 }
+		    		return new BasicStroke((float) node.getWeight());
 		    	 }
 		     };
 		     
@@ -670,6 +749,20 @@ public class JungVisualization {
 			     edgeWeight.setAction(new EdgeWeightAction(this, edgeWeight));
 			     edgeWeight.setText("Visualize Edge Weights");
 			     optionMenu.add(edgeWeight);
+			     optionMenu.addSeparator();
+			     	for (RepresentationType enableType : map.keySet()) {
+			     		if (enableType == RepresentationType.custom || enableType == RepresentationType.all) {
+			     			continue;
+			     		}
+					    JCheckBoxMenuItem CustomButton = new JCheckBoxMenuItem();
+			     		CustomButton.setAction(new CustomOptionAction(this, enableType));
+			     		CustomButton.setSelected(true);
+			     		CustomButton.setText(enableType.getTitle());
+			     		CustomButton.setEnabled(false);
+			     		optionMenu.add(CustomButton);
+			     		customEnabledTypes.add(enableType);
+			     		customButtons.add(CustomButton);
+			     	}
 		     menuBar.add(optionMenu);
 		     
 		     window.setJMenuBar(menuBar);
@@ -684,10 +777,10 @@ public class JungVisualization {
 	      
 	}
 	
-	public void Visualize(Tree tree) {
-		// TODO Auto-generated method stub
-		
-	}
+//	public void Visualize(Tree tree) {
+//		// TODO Auto-generated method stub
+//		
+//	}
 	
 	
 	private void performSearch() {
