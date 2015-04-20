@@ -8,7 +8,6 @@ import java.util.Set;
 
 import com.smanzana.JavaVis.Parser.Wrappers.Cclass;
 import com.smanzana.JavaVis.Representation.DataRepresentation;
-import com.smanzana.JavaVis.Representation.Tree.Tree;
 import com.smanzana.JavaVis.Util.Pair;
 
 /**
@@ -115,7 +114,6 @@ public class DirectedGraph extends Graph {
 			for (Pair<Cclass, Cclass> pair : data.getPairs()) {
 				Cclass src = pair.getLeft();
 				Cclass dest = pair.getRight();
-				System.out.println("[" + src + "] - [" + dest + "]");
 				DirectedGraphNode srcNode = null, destNode = null;
 				
 				Iterator<DirectedGraphNode> it = nodes.iterator();

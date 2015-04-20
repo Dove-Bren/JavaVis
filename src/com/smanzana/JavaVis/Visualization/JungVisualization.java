@@ -830,13 +830,13 @@ public class JungVisualization {
 			return;
 		}
 		
-		String packageName = null;
-		int methodCount = 0;
-		
-		for (Pair<Cclass, Cclass> pair : picks.getPicked()) {
-						
-			//methodCount += (c.getMethods() == null ? 0 : c.getMethods().size());
-		}
+//		String packageName = null;
+//		int methodCount = 0;
+//		
+//		for (Pair<Cclass, Cclass> pair : picks.getPicked()) {
+//						
+//			//methodCount += (c.getMethods() == null ? 0 : c.getMethods().size());
+//		}
 		
 		infoPanel.setPackageInfo("");
 		infoPanel.setTitle("Selection");
