@@ -67,6 +67,7 @@ public final class Driver {
 		
 		DirectedGraph allGraph = classesAsReferenceGraph(classes);
 		allGraph.mergeFrom(extendTree);
+		allGraph.mergeFrom(implementGraph);
 		
 		//WebVisualization webViz = new WebVisualization();
 		//webViz.Visualize(VisualizationType.IMPLEMENTS, implementGraph);

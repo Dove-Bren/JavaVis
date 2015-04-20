@@ -257,6 +257,35 @@ public class JungVisualization {
 		
 	}
 	
+	private static final class EdgeWeightAction extends AbstractAction {
+		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 852235214270217247L;
+
+		private JungVisualization vis;
+		
+		private AbstractButton but;
+		
+		public EdgeWeightAction(JungVisualization vis, AbstractButton but) {
+			this.vis = vis;
+			this.but = but;
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			// TODO Auto-generated method stub
+			if (but.isSelected()) {
+				vis.edgeWeight = true;
+			} else {
+				vis.edgeWeight = false;
+			}
+			//vis.Visualize(vis.lastType);
+		}
+		
+	}
+	
 	private static final class LayoutAction extends AbstractAction{
 		
 		/**
@@ -368,9 +397,12 @@ public class JungVisualization {
 	
 	private boolean includeObject;
 	
+	private boolean edgeWeight;
+	
 	public JungVisualization() {
 		map = new HashMap<DataRepresentation.RepresentationType, DataRepresentation>();
 		includeObject = true;
+		edgeWeight = true;
 	}
 	
 	public void provideRepresentation(DataRepresentation.RepresentationType type, DataRepresentation data) {
@@ -616,11 +648,16 @@ public class JungVisualization {
 		     JMenu optionMenu = new JMenu();
 		     optionMenu.setText("Options");
 		     optionMenu.setIcon(null);
-		     JCheckBoxMenuItem includeObject = new JCheckBoxMenuItem("Include java.lang.Object");
-		     includeObject.setSelected(true);
-		     includeObject.setAction(new IncludeObjectAction(this, includeObject));
-		     includeObject.setText("Include java.lang.Object");
-		     optionMenu.add(includeObject);
+			     JCheckBoxMenuItem includeObject = new JCheckBoxMenuItem("Include java.lang.Object");
+			     includeObject.setSelected(true);
+			     includeObject.setAction(new IncludeObjectAction(this, includeObject));
+			     includeObject.setText("Include java.lang.Object");
+			     optionMenu.add(includeObject);
+			     JCheckBoxMenuItem edgeWeight = new JCheckBoxMenuItem("Visualize Edge Weights");
+			     edgeWeight.setSelected(true);
+			     edgeWeight.setAction(new EdgeWeightAction(this, edgeWeight));
+			     edgeWeight.setText("Visualize Edge Weights");
+			     optionMenu.add(edgeWeight);
 		     menuBar.add(optionMenu);
 		     
 		     window.setJMenuBar(menuBar);
