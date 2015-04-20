@@ -413,6 +413,9 @@ public class FileParser {
 						if (word.contains("<")) {
 							word = word.substring(0, word.indexOf("<"));
 						}
+						if (word.contains("[")) {
+							word = word.substring(0, word.indexOf("["));
+						}
 						
 						//need package name
 						String pname;
@@ -423,7 +426,6 @@ public class FileParser {
 							int pos = word.lastIndexOf(".");
 							pname = word.substring(0, pos);
 							word = word.substring(pos + 1);
-							System.out.println(pname + " - " + word);
 						} else if (currentClass.getImport(word) != null){
 							//found a matching import!
 							pname = currentClass.getImport(word).getPackageName();

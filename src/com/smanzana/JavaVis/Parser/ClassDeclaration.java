@@ -104,6 +104,7 @@ public class ClassDeclaration {
 		switch (str) {
 		case "public":
 		case "private":
+		case "protected":
 		case "abstract":
 		case "final":
 		case "static":

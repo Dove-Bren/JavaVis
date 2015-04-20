@@ -15,9 +15,6 @@ import com.smanzana.JavaVis.Parser.Wrappers.Import;
 import com.smanzana.JavaVis.Representation.DataRepresentation.RepresentationType;
 import com.smanzana.JavaVis.Representation.Graph.DirectedGraph;
 import com.smanzana.JavaVis.Representation.Graph.DirectedGraphNode;
-import com.smanzana.JavaVis.Representation.Graph.DirectedWeightedEdge;
-import com.smanzana.JavaVis.Representation.Graph.GraphNode;
-import com.smanzana.JavaVis.Representation.Graph.UndirectedGraph;
 import com.smanzana.JavaVis.Representation.Tree.Tree;
 import com.smanzana.JavaVis.Visualization.JungVisualization;
 
@@ -319,8 +316,7 @@ public final class Driver {
 			}
 			
 			for (Cclass refClass : c.getFormalReferenceMap().keySet()) {
-				DirectedGraphNode mN, rN;
-				mN = n;
+				DirectedGraphNode rN;
 				rN = null;
 				for (Cclass cet : nodeMap.keySet()) {
 					if (cet.equals(refClass)) {
@@ -329,7 +325,6 @@ public final class Driver {
 					}
 				}
 				if (rN == null) {
-					System.out.println("Creating new node for [" + refClass + "]");
 					rN = new DirectedGraphNode(refClass);
 					nodeMap.put(refClass, rN);
 				}

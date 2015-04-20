@@ -124,11 +124,14 @@ public class Cclass {
 	}
 	
 	public int getFormalReferenceCount(Cclass cclass) {
-		if (formalReferenceMap.containsKey(cclass)) {
-			return formalReferenceMap.get(cclass);
-		} else {
-			return 0;
-		}
+		
+		for (Cclass cs : formalReferenceMap.keySet()) {
+			if (cs.equals(cclass)) {
+				return formalReferenceMap.get(cs);
+			}
+		} 
+		
+		return 0;
 	}
 	
 	public Map<Cclass, Integer> getFormalReferenceMap() {
