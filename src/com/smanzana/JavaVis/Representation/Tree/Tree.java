@@ -7,6 +7,7 @@ import java.util.Set;
 import com.smanzana.JavaVis.Parser.Wrappers.Cclass;
 import com.smanzana.JavaVis.Representation.DataRepresentation;
 import com.smanzana.JavaVis.Util.Pair;
+import com.smanzana.JavaVis.Util.WeightedPair;
 
 /**
  * Basic tree data structure with an undetermined number of children
@@ -202,6 +203,23 @@ public class Tree extends DataRepresentation {
 		for (Tree child : children) {
 			pairs.add(new Pair<Cclass, Cclass>(cclass, child.cclass));
 			pairs.addAll(child.getPairs());
+		}
+		
+		return pairs;
+	}
+	
+	@Override
+	public Set<WeightedPair<Cclass, Cclass>> getWeightedPairs() {
+
+		Set<WeightedPair<Cclass, Cclass>> pairs = new HashSet<WeightedPair<Cclass, Cclass>>();
+		
+		if (children.isEmpty()) {
+			return pairs;
+		}
+		
+		for (Tree child : children) {
+			pairs.add(new WeightedPair<Cclass, Cclass>(cclass, child.cclass, 1.0));
+			pairs.addAll(child.getWeightedPairs());
 		}
 		
 		return pairs;

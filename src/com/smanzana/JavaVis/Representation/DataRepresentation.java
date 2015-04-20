@@ -4,6 +4,7 @@ import java.util.Set;
 
 import com.smanzana.JavaVis.Parser.Wrappers.Cclass;
 import com.smanzana.JavaVis.Util.Pair;
+import com.smanzana.JavaVis.Util.WeightedPair;
 
 public abstract class DataRepresentation {
 	
@@ -28,5 +29,7 @@ public abstract class DataRepresentation {
 	public abstract Set<Cclass> getClasses();
 	
 	public abstract Set<Pair<Cclass, Cclass>> getPairs();
+	
+	public abstract Set<WeightedPair<Cclass, Cclass>> getWeightedPairs();
 	
 }

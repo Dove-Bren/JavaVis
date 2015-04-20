@@ -1,10 +1,12 @@
 package com.smanzana.JavaVis.Visualization;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Paint;
 import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.geom.Ellipse2D;
 import java.lang.reflect.InvocationTargetException;
@@ -37,6 +39,7 @@ import com.smanzana.JavaVis.Representation.DataRepresentation;
 import com.smanzana.JavaVis.Representation.DataRepresentation.RepresentationType;
 import com.smanzana.JavaVis.Representation.Tree.Tree;
 import com.smanzana.JavaVis.Util.Pair;
+import com.smanzana.JavaVis.Util.WeightedPair;
 
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
@@ -78,7 +81,7 @@ public class JungVisualization {
 ////		}
 //		
 //		@Override
-//	private static final class PickTatle extends ClassicPickSupport<Cclass, Pair<Cclass, Cclass>> {
+//	private static final class PickTatle extends ClassicPickSupport<Cclass, WeightedPair<Cclass, Cclass>> {
 //		
 //		private JungVisualization vis;
 //		
@@ -89,12 +92,12 @@ public class JungVisualization {
 //		
 //		//public void mouseReleased(MouseEvent ev) {
 //		@Override
-//		public Cclass getVertex(Layout<Cclass, Pair<Cclass, Cclass>> layout, double x, double y) {
+//		public Cclass getVertex(Layout<Cclass, WeightedPair<Cclass, Cclass>> layout, double x, double y) {
 //			return super.getVertex(layout, x, y);
 //		}
 //		
 //		@Override
-//		public Cclass getVertex(Layout<Cclass, Pair<Cclass, Cclass>> layout, double x, double y, double radius) {
+//		public Cclass getVertex(Layout<Cclass, WeightedPair<Cclass, Cclass>> layout, double x, double y, double radius) {
 //			Cclass result = super.getVertex(layout, x, y, radius);
 //			//super.mouseReleased(ev);
 //			PickedState<Cclass> picks = vis.vv.getPickedVertexState();
@@ -295,19 +298,19 @@ public class JungVisualization {
 
 		JungVisualization vis;
 		
-		Class<? extends Layout<Cclass, Pair<Cclass, Cclass>>> layoutClass;
+		Class<? extends Layout<Cclass, WeightedPair<Cclass, Cclass>>> layoutClass;
 		
 		@SuppressWarnings("unchecked")
 		public LayoutAction(JungVisualization vis, @SuppressWarnings("rawtypes") Class<? extends Layout> layoutClass) {
 			this.vis = vis;
-			this.layoutClass = (Class<Layout<Cclass, Pair<Cclass, Cclass>>>)layoutClass;
+			this.layoutClass = (Class<Layout<Cclass, WeightedPair<Cclass, Cclass>>>)layoutClass;
 		}
 		
 		@SuppressWarnings("unchecked")
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			try {
-				vis.layout = layoutClass.getConstructor( (Class<Graph<Cclass, Pair<Cclass, Cclass>>>)(Class<?>)Graph.class  ).newInstance(vis.layout.getGraph());
+				vis.layout = layoutClass.getConstructor( (Class<Graph<Cclass, WeightedPair<Cclass, Cclass>>>)(Class<?>)Graph.class  ).newInstance(vis.layout.getGraph());
 			} catch (InstantiationException | IllegalAccessException
 					| IllegalArgumentException | InvocationTargetException
 					| NoSuchMethodException | SecurityException e) {
@@ -383,15 +386,15 @@ public class JungVisualization {
 	
 	private String searchTerm;
 	
-	private VisualizationViewer<Cclass, Pair<Cclass, Cclass>> vv;
+	private VisualizationViewer<Cclass, WeightedPair<Cclass, Cclass>> vv;
 	
 	private RepresentationType lastType;
 	
 	private InfoPanel infoPanel;
 	
-	private Layout<Cclass, Pair<Cclass, Cclass>> layout;
+	private Layout<Cclass, WeightedPair<Cclass, Cclass>> layout;
 	
-	private DefaultModalGraphMouse<Cclass, Pair<Cclass, Cclass>> mouse;
+	private DefaultModalGraphMouse<Cclass, WeightedPair<Cclass, Cclass>> mouse;
 	
 	private Map<DataRepresentation.RepresentationType, DataRepresentation> map;
 	
@@ -428,14 +431,14 @@ public class JungVisualization {
 		
 		DataRepresentation dataRep = map.get(type);
 		
-		edu.uci.ics.jung.graph.Graph<Cclass, Pair<Cclass, Cclass>> visGraph = new DirectedSparseGraph<Cclass, Pair<Cclass, Cclass>>();
+		edu.uci.ics.jung.graph.Graph<Cclass, WeightedPair<Cclass, Cclass>> visGraph = new DirectedSparseGraph<Cclass, WeightedPair<Cclass, Cclass>>();
 		
 		
 		if (includeObject) {
 			for (Cclass node : dataRep.getClasses()) {
 				visGraph.addVertex(node);
 			}
-			for (Pair<Cclass, Cclass> e : dataRep.getPairs()) {
+			for (WeightedPair<Cclass, Cclass> e : dataRep.getWeightedPairs()) {
 				visGraph.addEdge(e, e.getLeft(), e.getRight());
 			}
 		} else {
@@ -444,7 +447,7 @@ public class JungVisualization {
 					visGraph.addVertex(node);
 				}
 			}
-			for (Pair<Cclass, Cclass> e : dataRep.getPairs()) {
+			for (WeightedPair<Cclass, Cclass> e : dataRep.getWeightedPairs()) {
 				if ((e.getLeft().getPackageName() + "." + e.getLeft().getName()).equals("java.lang.Object") || (e.getRight().getPackageName() + "." + e.getRight().getName()).equals("java.lang.Object")) {
 					continue;
 				}
@@ -454,7 +457,7 @@ public class JungVisualization {
 	
 	    //create layout if we don't alrady have one
 		if (layout == null) {
-		    layout = new CircleLayout<Cclass, Pair<Cclass, Cclass>>(visGraph);
+		    layout = new CircleLayout<Cclass, WeightedPair<Cclass, Cclass>>(visGraph);
 		    layout.setSize(new Dimension(600,600));
 		} else {
 			layout.setGraph(visGraph);
@@ -462,7 +465,7 @@ public class JungVisualization {
 	    
 	    //create a visualizatoin viewer if we don't have one, or update current with new type
 	    if (vv == null) {
-	    	vv = new VisualizationViewer<Cclass, Pair<Cclass, Cclass>>(layout);
+	    	vv = new VisualizationViewer<Cclass, WeightedPair<Cclass, Cclass>>(layout);
 		    vv.setPreferredSize(new Dimension(700,700)); //Sets the viewing area size
 		    
 		    Transformer<Cclass,Paint> vertexPaint = new Transformer<Cclass, Paint>() {
@@ -482,10 +485,10 @@ public class JungVisualization {
 		         }
 		     };  
 		     
-		     Transformer<Pair<Cclass, Cclass>, Paint> edgePaint = new Transformer<Pair<Cclass, Cclass>, Paint>() {
+		     Transformer<WeightedPair<Cclass, Cclass>, Paint> edgePaint = new Transformer<WeightedPair<Cclass, Cclass>, Paint>() {
 
 				@Override
-				public Paint transform(Pair<Cclass, Cclass> arg0) {
+				public Paint transform(WeightedPair<Cclass, Cclass> arg0) {
 					updateInfo();
 					if (vv.getPickedEdgeState().isPicked(arg0)) {
 						return Color.GREEN;
@@ -534,6 +537,14 @@ public class JungVisualization {
 		    	 }
 		     };
 		     
+		     Transformer<WeightedPair<Cclass, Cclass>, Stroke> edgeStroke = new Transformer<WeightedPair<Cclass, Cclass>, Stroke>() {
+		    	 public Stroke transform(WeightedPair<Cclass, Cclass> node) {
+		    		return new BasicStroke( (float) ((WeightedPair) node).getWeight());
+		    	 }
+		     };
+		     
+		     
+		     
 //		     Transformer<GraphNode, String> vertexTooltip = new Transformer<GraphNode, String>(){
 //		    	public String transform(GraphNode node) {
 //		    		if (node == null || node.getCclass() == null) {
@@ -559,12 +570,13 @@ public class JungVisualization {
 		     vv.getRenderContext().setEdgeDrawPaintTransformer(edgePaint);
 		     vv.getRenderContext().setArrowDrawPaintTransformer(edgePaint);
 		     vv.getRenderContext().setVertexDrawPaintTransformer(vertexOutline);
+		     vv.getRenderContext().setEdgeStrokeTransformer(edgeStroke);
 		     
 		     vv.getRenderContext().setVertexLabelRenderer(rend);
 		     
 		     
 		     //create mouse
-		     mouse = new DefaultModalGraphMouse<Cclass, Pair<Cclass, Cclass>>();
+		     mouse = new DefaultModalGraphMouse<Cclass, WeightedPair<Cclass, Cclass>>();
 		     //mouse.add(new SelectMousePlugin(this));
 		     //mouse.add(new BrushPlugin(this));
 		     vv.addKeyListener(mouse.getModeKeyListener());
@@ -841,7 +853,7 @@ public class JungVisualization {
 	
 	
 	private void updateEdges() {
-		PickedState<Pair<Cclass, Cclass>> picks = vv.getPickedEdgeState();
+		PickedState<WeightedPair<Cclass, Cclass>> picks = vv.getPickedEdgeState();
 		
 		if (picks == null || picks.getPicked() == null || picks.getPicked().isEmpty()) {
 			return;
@@ -849,7 +861,7 @@ public class JungVisualization {
 		
 		if (picks.getPicked().size() == 1) {
 			//only 1 thing selected
-			Pair<Cclass, Cclass> edge = picks.getPicked().iterator().next();
+			WeightedPair<Cclass, Cclass> edge = picks.getPicked().iterator().next();
 			infoPanel.setTitle(edge.getLeft().getName() + " -> " + edge.getRight().getName());
 			infoPanel.setPackageInfo("");
 			
@@ -870,7 +882,7 @@ public class JungVisualization {
 //		String packageName = null;
 //		int methodCount = 0;
 //		
-//		for (Pair<Cclass, Cclass> pair : picks.getPicked()) {
+//		for (WeightedPair<Cclass, Cclass> pair : picks.getPicked()) {
 //						
 //			//methodCount += (c.getMethods() == null ? 0 : c.getMethods().size());
 //		}

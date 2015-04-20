@@ -6,6 +6,7 @@ import java.util.Set;
 import com.smanzana.JavaVis.Parser.Wrappers.Cclass;
 import com.smanzana.JavaVis.Representation.DataRepresentation;
 import com.smanzana.JavaVis.Util.Pair;
+import com.smanzana.JavaVis.Util.WeightedPair;
 
 
 /**
@@ -158,6 +159,17 @@ public abstract class Graph extends DataRepresentation {
 		}
 		
 		return pairs;
+	}
+	
+	@Override
+	public Set<WeightedPair<Cclass, Cclass>> getWeightedPairs() {
+		Set<WeightedPair<Cclass, Cclass>> pairs = new HashSet<WeightedPair<Cclass, Cclass>>();
+		for (UndirectedWeightedEdge e : getEdges()) {
+			pairs.add(new WeightedPair<Cclass, Cclass>(e.getEnds().getLeft().getCclass(), e.getEnds().getRight().getCclass(), e.getWeight()));
+		}
+		
+		return pairs;
+		
 	}
 	
 }

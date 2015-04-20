@@ -1,6 +1,6 @@
 package com.smanzana.JavaVis.Representation.Graph;
 
-import com.smanzana.JavaVis.Util.Pair;
+import com.smanzana.JavaVis.Util.WeightedPair;
 
 public class DirectedWeightedEdge extends UndirectedWeightedEdge{
 	
@@ -15,8 +15,8 @@ public class DirectedWeightedEdge extends UndirectedWeightedEdge{
 	 * @param weight
 	 */
 	public DirectedWeightedEdge(DirectedGraphNode source, DirectedGraphNode dest, double weight) {
-		this.weight = weight;
-		this.ends = new Pair<GraphNode, GraphNode>(source, dest);
+		//this.weight = weight;
+		this.ends = new WeightedPair<GraphNode, GraphNode>(source, dest, weight);
 	}
 	
 	//DEFINE LEFT: SOURCE
