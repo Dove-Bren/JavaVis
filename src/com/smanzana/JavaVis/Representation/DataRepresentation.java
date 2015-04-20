@@ -10,13 +10,9 @@ public abstract class DataRepresentation {
 	public enum RepresentationType {
 		extend("Direct Inheritence"),
 		implement("Interface Inheritence"),
-		referencedby("Referenced By"),
-		referenceto("References To"),
 		reference("Reference"),
-		calledby("Called By"),
-		callto("Calls On"),
-		call("Calls"),
-		all("All");
+		all("All"),
+		custom("Custom");
 		
 		private String title;
 		
