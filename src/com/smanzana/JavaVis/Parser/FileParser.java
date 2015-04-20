@@ -442,11 +442,26 @@ public class FileParser {
 						//create based on name and package name
 						Cclass refClass = new Cclass(word, pname);
 						
-						if (refs.containsKey(refClass)) {
-							refs.put(refClass, refs.get(refClass) + 1);
-						} else {
+						//replacing stupid contains with iterator again >.<
+						boolean exist = false;
+						for (Cclass c : refs.keySet()) {
+							if (c.equals(refClass)) {
+								refs.put(refClass, refs.get(c) + 1);
+								exist = true;
+								break;
+							}
+						}
+						
+						if (!exist) {
 							refs.put(refClass, 1);
 						}
+						
+						
+//						if (refs.containsKey(refClass)) {
+//							refs.put(refClass, refs.get(refClass) + 1);
+//						} else {
+//							refs.put(refClass, 1);
+//						}
 						
 						break;
 					}
