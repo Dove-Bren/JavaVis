@@ -166,7 +166,7 @@ public class Cclass {
 			//we also need to be wary of import java.util.*'s
 			//TODO figure out if there's any way to do this... darn it!
 			if (JavaLangDictionary.isJavaLang(localName)) {
-				return new Import("java.lang." + localName);
+				return new Import("import java.lang." + localName);
 			}
 			
 		}
@@ -214,6 +214,9 @@ public class Cclass {
 	
 	@Override
 	public boolean equals(Object o) {
+//		if (toString().startsWith("java.lang")) {
+//			System.out.println("Compare [" + toString() + "] " + (toString().equals(o.toString()) ? "= " : "fails ") + "[" + o.toString() + "]");
+//		}
 		return toString().equals(o.toString());
 	}
 	

@@ -429,7 +429,12 @@ public class FileParser {
 							pname = currentClass.getImport(word).getPackageName();
 						} else {
 							//assume pname is same as current class
-							pname = currentClass.getPackageName();
+							//unless it's a JavaLang class
+  							if (JavaLangDictionary.isJavaLang(word)) {
+  								pname = "java.lang";
+  							} else {
+								pname = currentClass.getPackageName();
+  							}
 						}
 						
 						//create based on name and package name
@@ -440,6 +445,8 @@ public class FileParser {
 						} else {
 							refs.put(refClass, 1);
 						}
+						
+						break;
 					}
 					
 					

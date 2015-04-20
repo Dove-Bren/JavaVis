@@ -321,8 +321,15 @@ public final class Driver {
 			for (Cclass refClass : c.getFormalReferenceMap().keySet()) {
 				DirectedGraphNode mN, rN;
 				mN = n;
-				rN = nodeMap.get(refClass);
+				rN = null;
+				for (Cclass cet : nodeMap.keySet()) {
+					if (cet.equals(refClass)) {
+						rN = nodeMap.get(cet);
+						break;
+					}
+				}
 				if (rN == null) {
+					System.out.println("Creating new node for [" + refClass + "]");
 					rN = new DirectedGraphNode(refClass);
 					nodeMap.put(refClass, rN);
 				}

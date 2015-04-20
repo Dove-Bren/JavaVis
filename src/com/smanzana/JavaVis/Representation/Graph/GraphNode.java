@@ -46,5 +46,18 @@ public class GraphNode {
 		return cclass;
 	}
 	
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof GraphNode)) {
+			return false;
+		}
+		
+		GraphNode n = (GraphNode) o;
+		
+		if (n.uniqueKey == uniqueKey) {
+			return true;
+		}
+		return false;
+	}
 	
 }

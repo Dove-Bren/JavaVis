@@ -52,6 +52,10 @@ public final class JavaLangDictionary {
 		langDictionary.add("ThreadLocal");
 		langDictionary.add("Throwable");
 		langDictionary.add("Void");
+		langDictionary.add("int");
+		langDictionary.add("double");
+		langDictionary.add("float");
+		langDictionary.add("char");
 	}
 	
 	/**
