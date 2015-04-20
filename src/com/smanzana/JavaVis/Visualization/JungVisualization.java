@@ -41,7 +41,6 @@ import com.smanzana.JavaVis.Parser.Wrappers.Cclass;
 import com.smanzana.JavaVis.Representation.DataRepresentation;
 import com.smanzana.JavaVis.Representation.DataRepresentation.RepresentationType;
 import com.smanzana.JavaVis.Representation.Graph.DirectedGraph;
-import com.smanzana.JavaVis.Representation.Tree.Tree;
 import com.smanzana.JavaVis.Util.WeightedPair;
 
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
@@ -242,7 +241,10 @@ public class JungVisualization {
 				vis.map.put(RepresentationType.custom, graph);
 
 			}
-				
+
+			if (vis.layout instanceof CircleLayout<?, ?>) {
+				vis.layout = null;
+			}
 			
 			vis.Visualize(type);
 		}
@@ -335,7 +337,6 @@ public class JungVisualization {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
 			//vis.vv.setLayout(layout);
 			vis.vv.setGraphLayout(vis.layout);
 		}
