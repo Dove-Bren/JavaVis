@@ -49,7 +49,7 @@ public class ClassDeclaration {
 			}
 			
 			//tokens[i] is not a modifier. Hopefully it's class!
-			if (tokens[i].equals("class") || tokens[i].equals("interface") || tokens[i].equals("enum")) {
+			if (tokens[i].equals("class") || tokens[i].equals("interface") || tokens[i].equals("@interface") || tokens[i].equals("enum")) {
 				this.name = tokens[i + 1];
 				if (name.contains("<")) {
 					this.name += tokens[i + 2].substring(0, tokens[i+2].indexOf(">") + 1);
@@ -57,7 +57,7 @@ public class ClassDeclaration {
 				}
 				if (tokens[i].equalsIgnoreCase("class")) {
 					type = Cclass.Type.CLASS;
-				} else if (tokens[i].equalsIgnoreCase("interface")) {
+				} else if (tokens[i].equalsIgnoreCase("interface") || tokens[i].equalsIgnoreCase("@interface")) {
 					type = Cclass.Type.INTERFACE;
 				} else {
 					type = Cclass.Type.ENUM;

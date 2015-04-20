@@ -144,8 +144,33 @@ public class FileParser {
 		List<Import> imports = new LinkedList<Import>();
 		String packageName;
 		String line = "";
+		
+		//clear away all comments and empty lines before package name
+		while (line.trim() == "") {
+			line = input.nextLine();
+		}
+		if (line.contains("//") || line.contains("/*")) {
+			while (line.contains("//") || line.contains("/*")) {
+				
+				if (line.startsWith("/*")) {
+					while (input.hasNext() && !input.next().contains("*/")) {
+						;
+					}
+					line = input.nextLine();
+					continue;
+				}
+				//starts with //
+				line = input.nextLine();
+			}
+		}
+		
+		//get rid of any extra blank lines
+		while (line.trim().isEmpty()) {
+			line = input.nextLine();
+		}
+		
 		//assume first line is package declaration
-		packageName = input.nextLine().substring(8); //'package ' is 8 chars
+		packageName = line.substring(8); //'package ' is 8 chars
 		packageName = packageName.substring(0, packageName.length() - 1);
 		
 		while (input.hasNext()) {
@@ -163,10 +188,32 @@ public class FileParser {
 			imports.add(new Import(line));
 		}
 		
+		//get rid of any pre-declaration comments
+		if (line.contains("//") || line.contains("/*")) {
+			while (line.contains("//") || line.contains("/*")) {
+				
+				if (line.startsWith("/*")) {
+					while (input.hasNext() && !input.next().contains("*/")) {
+						;
+					}
+					line = input.nextLine();
+					continue;
+				}
+				//starts with //
+				line = input.nextLine();
+			}
+		}
+		
+		//last check against whitespace
+		while (line.trim().isEmpty() || line.trim().startsWith("@")) {
+			line = input.nextLine();
+		}
+		
 		//SUPER IMPORTANT PROGRAMMING NOTE LOGIC OMG ODNT FORGET
 		//line still has the last line. This should be the class declaration if our assumptions are correct
-		if (!(  (line.contains(" class ") || line.contains(" interface ") || line.contains(" enum "))  && !line.startsWith("*") && !line.startsWith("/"))) {
-			System.err.println("Error in assumption that after imports is the declaration!");
+		if (!(  (line.contains("class ") || line.contains("interface ") || line.contains("enum "))  && !line.startsWith("*") && !line.startsWith("/"))) {
+			System.err.println("Error in [" + file.getPath() + "] Assumption that after imports is the declaration:");
+			System.err.println(line);
 			return null;		
 		}
 		
@@ -345,25 +392,74 @@ public class FileParser {
 		
 		//skip over package name
 		line = input.nextLine();
-		//get through all the inports
-		while (input.hasNext()) {
-			line = input.nextLine().trim();
-			if (line.isEmpty() || line.startsWith("/") || line.startsWith("*")) {
-				continue;
-			}
-			
-			//we're looking for imports, so as soon as we don't have one break and start next process
-			if (!line.startsWith("import ")) {
-				break;
-			}
-			
-			//starts with import
-		}
+		//clear away all comments and empty lines before package name
+				while (line.trim() == "") {
+					line = input.nextLine();
+				}
+				if (line.contains("//") || line.contains("/*")) {
+					while (line.contains("//") || line.contains("/*")) {
+						
+						if (line.startsWith("/*")) {
+							while (input.hasNext() && !input.next().contains("*/")) {
+								;
+							}
+							line = input.nextLine();
+							continue;
+						}
+						//starts with //
+						line = input.nextLine();
+					}
+				}
+				
+				//get rid of any extra blank lines
+				while (line.trim().isEmpty()) {
+					line = input.nextLine();
+				}
+				
+				//assume first line is package declaration
+				//packageName = line.substring(8); //'package ' is 8 chars
+				//packageName = packageName.substring(0, packageName.length() - 1);
+				
+				while (input.hasNext()) {
+					line = input.nextLine().trim();
+					if (line.isEmpty() || line.startsWith("/") || line.startsWith("*")) {
+						continue;
+					}
+					
+					//we're looking for imports, so as soon as we don't have one break and start next process
+					if (!line.startsWith("import ")) {
+						break;
+					}
+					
+					//starts with import
+					//imports.add(new Import(line));
+				}
+				
+				//get rid of any pre-declaration comments
+				if (line.contains("//") || line.contains("/*")) {
+					while (line.contains("//") || line.contains("/*")) {
+						
+						if (line.startsWith("/*")) {
+							while (input.hasNext() && !input.next().contains("*/")) {
+								;
+							}
+							line = input.nextLine();
+							continue;
+						}
+						//starts with //
+						line = input.nextLine();
+					}
+				}
+				
+				//last check against whitespace
+				while (line.trim().isEmpty() || line.trim().startsWith("@")) {
+					line = input.nextLine();
+				}
 		
 		//SUPER IMPORTANT PROGRAMMING NOTE LOGIC OMG ODNT FORGET
 		//line still has the last line. This should be the class declaration if our assumptions are correct
-		if (!(  (line.contains(" class ") || line.contains(" interface ") || line.contains(" enum "))  && !line.startsWith("*") && !line.startsWith("/"))) {
-			System.err.println("Error in assumption that after imports is the declaration!");
+		if (!(  (line.contains("class ") || line.contains("interface ") || line.contains("enum "))  && !line.startsWith("*") && !line.startsWith("/"))) {
+			System.err.println("Error in assumption that after imports is the declaration~");
 			return null;		
 		}
 		
