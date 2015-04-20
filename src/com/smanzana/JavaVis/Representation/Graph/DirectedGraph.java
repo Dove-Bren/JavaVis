@@ -1,12 +1,15 @@
 package com.smanzana.JavaVis.Representation.Graph;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Set;
-import java.util.List;
 
+import com.smanzana.JavaVis.Parser.Wrappers.Cclass;
 import com.smanzana.JavaVis.Representation.DataRepresentation;
+import com.smanzana.JavaVis.Representation.Tree.Tree;
+import com.smanzana.JavaVis.Util.Pair;
 
 /**
  * Basic graph data structure.
@@ -101,8 +104,51 @@ public class DirectedGraph extends Graph {
 				}
 				
 			}
-			
+			return;
 		}
+		
+		//not a directed graph. how about a tree?
+		if (data instanceof Tree) {
+			//in luck, cause trees are directed!
+			Tree otherTree = (Tree) data;
+			Set<Cclass> myclasses = getClasses();
+			//grab verticies, throw them in
+			for (Pair<Cclass, Cclass> pair : otherTree.getPairs()) {
+				Cclass src = pair.getLeft();
+				Cclass dest = pair.getRight();
+				System.out.println("[" + src + "] - [" + dest + "]");
+				DirectedGraphNode srcNode = null, destNode = null;
+				
+				Iterator<DirectedGraphNode> it = nodes.iterator();
+				DirectedGraphNode curNode;
+				
+				while (it.hasNext()) {
+					curNode = it.next();
+					
+					if (curNode.getCclass().equals(src)) {
+						srcNode = curNode;
+					}
+					if (curNode.getCclass().equals(dest)) {
+						destNode = curNode;
+					}
+				}
+				
+				if (srcNode == null) {
+					srcNode = new DirectedGraphNode(src);
+					nodes.add(srcNode);
+				}
+				if (destNode == null) {
+					destNode = new DirectedGraphNode(dest);
+					nodes.add(destNode);
+				}
+				
+				//now made the edges from src to dest
+				srcNode.addEdge(destNode);
+			}
+			
+			//now grab edges and attach them to nodes
+		}
+		
 	}
 	
 }
