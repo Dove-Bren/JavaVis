@@ -833,9 +833,11 @@ public class JungVisualization {
 		     content.setLayout(new BorderLayout());
 		     content.setBorder(BorderFactory.createLoweredBevelBorder());
 		     infoPanel = new InfoPanel();
-		     TreePanel packageTreePanel = new TreePanel(this);
-		     infoPanel.add(packageTreePanel);
-		     packageTreePanel.CreateTree(dataRep.getClasses());
+		     if (map.keySet().contains(RepresentationType.all)) {
+			     TreePanel packageTreePanel = new TreePanel(this);
+			     infoPanel.add(packageTreePanel);
+			     packageTreePanel.CreateTree(map.get(RepresentationType.all).getClasses());
+		     }
 		     
 		     //set up two nested frames
 		     window.getContentPane().setLayout(new BorderLayout());
