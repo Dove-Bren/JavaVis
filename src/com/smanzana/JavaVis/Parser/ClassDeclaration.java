@@ -82,7 +82,20 @@ public class ClassDeclaration {
 		while (i < tokens.length) {
 			if (tokens[i].equals("extends")) {
 				//next token is what it extends!
-				this.extendString =tokens[i + 1];
+				this.extendString =tokens[i + 1].trim();
+				
+				//check if parameterization is in next string
+				if (extendString.contains("<") && tokens.length >= i+3) {
+					if (tokens[i + 2].contains(">")) {
+						extendString = extendString + tokens[i + 2];
+					}
+				}
+				
+				//check and make sure it doesn't include trailing {
+				if (this.extendString.endsWith("{")) {
+					extendString = extendString.substring(0, this.extendString.length() - 2);
+				}
+				
 				i = i+2;
 				continue;
 			}
