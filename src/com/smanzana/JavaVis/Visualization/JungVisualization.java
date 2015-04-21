@@ -448,7 +448,7 @@ public class JungVisualization {
 		
 		private JungVisualization vis;
 		
-		private JTextArea TreeComponent;
+		private JTextArea treeComponent;
 		
 		private static final class PackageWrapper {
 			//lol holds a list of classes in this package
@@ -486,9 +486,10 @@ public class JungVisualization {
 		public TreePanel(JungVisualization vis) {
 			this.vis = vis;
 			
-			TreeComponent = new JTextArea();
-			TreeComponent.setEditable(false);
-			TreeComponent.setLineWrap(false);
+			treeComponent = new JTextArea();
+			treeComponent.setEditable(false);
+			treeComponent.setLineWrap(false);
+			add(treeComponent);
 			
 			packageMap = null;
 		}
@@ -513,7 +514,18 @@ public class JungVisualization {
 				
 			}
 			
-			System.out.println(packageMap);
+			if (packageMap.isEmpty()) {
+				this.treeComponent.setText("No package tree!");
+				return;
+			}
+			
+			String treeString = "";
+			for (PackageWrapper pack : packageMap.values()) {
+				
+				for (Cclass c : pack.classes) {
+					
+				}
+			}
 			
 		}
 		
@@ -747,6 +759,9 @@ public class JungVisualization {
 		     content.setLayout(new BorderLayout());
 		     content.setBorder(BorderFactory.createLoweredBevelBorder());
 		     infoPanel = new InfoPanel();
+		     TreePanel packageTreePanel = new TreePanel(this);
+		     infoPanel.add(packageTreePanel);
+		     packageTreePanel.CreateTree(dataRep.getClasses());
 		     
 		     //set up two nested frames
 		     window.getContentPane().setLayout(new BorderLayout());
