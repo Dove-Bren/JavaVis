@@ -10,9 +10,12 @@ import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.geom.Ellipse2D;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -41,6 +44,7 @@ import com.smanzana.JavaVis.Parser.Wrappers.Cclass;
 import com.smanzana.JavaVis.Representation.DataRepresentation;
 import com.smanzana.JavaVis.Representation.DataRepresentation.RepresentationType;
 import com.smanzana.JavaVis.Representation.Graph.DirectedGraph;
+import com.smanzana.JavaVis.Representation.Tree.Tree;
 import com.smanzana.JavaVis.Util.WeightedPair;
 
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
@@ -446,6 +450,11 @@ public class JungVisualization {
 
 	private static final class TreePanel extends JPanel {
 		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		private JungVisualization vis;
 		
 		private JTextArea treeComponent;
@@ -481,7 +490,24 @@ public class JungVisualization {
 			}
 		}
 		
-		private HashMap<String, PackageWrapper> packageMap;
+		private static class LengthComparator implements Comparator<String> {
+
+			@Override
+			public int compare(String arg0, String arg1) {
+				int l1 = arg0.length();
+				int l2 = arg1.length();
+				
+				if (l1 < l2) {
+					return -1;
+				} else if (l1 == l2) {
+					return 0;
+				}
+				return 1;
+			}
+			
+		}
+		
+		private Tree<PackageWrapper> packageTree;
 		
 		public TreePanel(JungVisualization vis) {
 			this.vis = vis;
@@ -491,7 +517,7 @@ public class JungVisualization {
 			treeComponent.setLineWrap(false);
 			add(treeComponent);
 			
-			packageMap = null;
+			//packageMap = null;
 		}
 		
 		/**
@@ -500,41 +526,81 @@ public class JungVisualization {
 		 */
 		public void CreateTree(Set<Cclass> classes) {
 			//k what am I gonna have to do? Go through each class and construct a package tree
-			packageMap = new HashMap<String, PackageWrapper>();
 			
 			//lol FIRST we get a list of all package names! Make this easier
-			Set<String> packageNames = new HashSet<String>();
+			List<String> packageNames = new LinkedList<String>();
 			for (Cclass c : classes) {
 				if (!packageNames.contains(c.getPackageName())) {
 					packageNames.add(c.getPackageName());
 				}
 			}
 			
-			for (Cclass c : classes) {
-				
-				//check if we have their package in our map.
-				if (packageMap.keySet().contains(c.getPackageName())) {
-					packageMap.get(c.getPackageName()).addClass(c);
-				} else {
-					packageMap.put(c.getPackageName(), new PackageWrapper(c.getPackageName()));
-				}
-				
-				
-			}
+			java.util.Collections.sort(packageNames);
+			packageTree = new Tree<PackageWrapper>(new PackageWrapper("NEVER MATCHS LULZ OMG"));
 			
-			if (packageMap.isEmpty()) {
-				this.treeComponent.setText("No package tree!");
-				return;
-			}
-			
-			String treeString = "";
-			for (PackageWrapper pack : packageMap.values()) {
+			for (String name : packageNames) {
+				//System.out.println(name);
+				Tree<PackageWrapper> tree = getPackage(packageTree, name);
 				
-				for (Cclass c : pack.classes) {
-					
+				if (tree == null) {
+					//did not have tree
+					System.out.println(name + " | no tree!");
+					packageTree.addChild(new Tree<PackageWrapper>(new PackageWrapper(name)));
 				}
 			}
 			
+			System.out.println("---\n" + packageTree);
+			
+//			
+//			for (Cclass c : classes) {
+//				
+//				
+//				
+//				//check if we have their package in our map.
+//				if (packageMap.keySet().contains(c.getPackageName())) {
+//					packageMap.get(c.getPackageName()).addClass(c);
+//				} else {
+//					packageMap.put(c.getPackageName(), new PackageWrapper(c.getPackageName()));
+//				}
+//				
+//				
+//			}
+//			
+//			if (packageMap.isEmpty()) {
+//				this.treeComponent.setText("No package tree!");
+//				return;
+//			}
+//			
+//			String treeString = "";
+//			for (PackageWrapper pack : packageMap.values()) {
+//				
+//				for (Cclass c : pack.classes) {
+//					
+//				}
+//			}
+			
+		}
+		
+		private Tree<PackageWrapper> getPackage(Tree<PackageWrapper> tree, String packName) {
+			if (tree == null) {
+				return null;
+			}
+			if (tree.getCclass().name.equals(packName)) {
+				return tree;
+			}
+			
+			//recurve search!
+			if (tree.getChildren().isEmpty()) {
+				return null;
+			}
+			
+			for (Tree<PackageWrapper> subTree : tree.getChildren()) {
+				if (packName.startsWith(subTree.getCclass().name)) {
+					return getPackage(subTree, packName);
+				}
+			}
+			
+			return null;
 		}
 		
 	}
