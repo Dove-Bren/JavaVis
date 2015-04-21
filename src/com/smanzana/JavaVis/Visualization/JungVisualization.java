@@ -46,6 +46,7 @@ import com.smanzana.JavaVis.Representation.DataRepresentation.RepresentationType
 import com.smanzana.JavaVis.Representation.Graph.DirectedGraph;
 import com.smanzana.JavaVis.Representation.Tree.Tree;
 import com.smanzana.JavaVis.Util.WeightedPair;
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.Text;
 
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
@@ -540,17 +541,22 @@ public class JungVisualization {
 			
 			for (String name : packageNames) {
 				//System.out.println(name);
-				Tree<PackageWrapper> tree = getPackage(packageTree, name);
+				Tree<PackageWrapper> tree = getPackageWrapper(packageTree, name);
 				
 				if (tree == null) {
-					//did not have tree
-					System.out.println(name + " | no tree!");
 					packageTree.addChild(new Tree<PackageWrapper>(new PackageWrapper(name)));
+				} else if (!tree.getCclass().name.equals(name)) {
+					//found it's new parent
+					tree.addChild(new Tree<PackageWrapper>(new PackageWrapper(name)));
 				}
+				
 			}
 			
-			System.out.println("---\n" + packageTree);
-			
+			//finally have a tree of the packages!
+			//not i just need to print them out in a nice tree format!
+			for (Tree<PackageWrapper> t : packageTree.getChildren()) {
+				System.out.println(treeSummary(t, 0));
+			}
 //			
 //			for (Cclass c : classes) {
 //				
@@ -581,7 +587,14 @@ public class JungVisualization {
 			
 		}
 		
-		private Tree<PackageWrapper> getPackage(Tree<PackageWrapper> tree, String packName) {
+		/**
+		 * Returns EITHER the package itself or the closest it got. This is so you (I) can create
+		 * a child right off from the paren tif the names don't match! It's hacky, but oh well :S
+		 * @param tree
+		 * @param packName
+		 * @return
+		 */
+		private Tree<PackageWrapper> getPackageWrapper(Tree<PackageWrapper> tree, String packName) {
 			if (tree == null) {
 				return null;
 			}
@@ -591,16 +604,55 @@ public class JungVisualization {
 			
 			//recurve search!
 			if (tree.getChildren().isEmpty()) {
-				return null;
+				return tree;
 			}
 			
 			for (Tree<PackageWrapper> subTree : tree.getChildren()) {
 				if (packName.startsWith(subTree.getCclass().name)) {
-					return getPackage(subTree, packName);
+					return getPackageWrapper(subTree, packName);
 				}
 			}
 			
-			return null;
+			return tree;
+		}
+		
+//		private Tree<PackageWrapper> getPackageParent(Tree<PackageWrapper> tree, String packName) {
+//			
+//		}
+		
+		private String treeSummary(Tree<PackageWrapper> tree, int depth) {
+			String buildString = "";
+			String tabLength = "";
+			
+			if (tree == null) {
+				return buildString;
+			}
+			
+			//construct/cache tabLength
+			for (int i = 0; i < depth; i++) {
+				tabLength += "  ";
+			}
+			
+			
+			buildString += tabLength + "[" + tree.getCclass().name + "]" + System.getProperty("line.separator");
+			//we need to print out the subtrees AND sub classes!
+			
+			//subtrees first!
+			if (!tree.getChildren().isEmpty()) {
+				for (Tree<PackageWrapper> t : tree.getChildren()) {
+					buildString += treeSummary(t, depth + 1);
+					//we add "  " for space to indicate nesting!
+				}
+			}
+			
+			//now classes
+			if (tree.getCclass().classes.size() != 0) {
+				for (Cclass c: tree.getCclass().classes) {
+					buildString += tabLength + c.getName() + System.getProperty("line.separator");
+				}
+			}
+			
+			return buildString;
 		}
 		
 	}
