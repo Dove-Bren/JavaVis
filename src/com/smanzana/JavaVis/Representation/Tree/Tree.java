@@ -15,11 +15,11 @@ import com.smanzana.JavaVis.Util.WeightedPair;
  * @author Skyler
  *
  */
-public class Tree extends DataRepresentation {
+public class Tree<T> extends DataRepresentation {
 	
-	private Tree parent;
+	private Tree<T> parent;
 	
-	private Set<Tree> children;
+	private Set<Tree<T>> children;
 	
 	private int depth;
 	
@@ -28,25 +28,25 @@ public class Tree extends DataRepresentation {
 	 */
 	private int hDepth;
 	
-	private String name;
+	private String name = "EMPTY NAME FOR TREE LULZ";
 	
-	private Cclass cclass;
+	private T node;
 	
 	
-	public Tree(Cclass cclass) {
+	public Tree(T node) {
 		this.parent = null;
-		this.children = new HashSet<Tree>();
+		this.children = new HashSet<Tree<T>>();
 		this.depth = 0;
 		this.hDepth = 0;
-		this.cclass = cclass;
-		this.name = cclass.getName();
+		this.node = node;
+		//this.name = cclass.getName();
 	}
 
 
 	/**
 	 * @return the parent
 	 */
-	public Tree getParent() {
+	public Tree<T> getParent() {
 		return parent;
 	}
 
@@ -54,7 +54,7 @@ public class Tree extends DataRepresentation {
 	/**
 	 * @param parent the parent to set
 	 */
-	public void setParent(Tree parent) {
+	public void setParent(Tree<T> parent) {
 		this.parent = parent;
 		parent.addChild(this);
 	}
@@ -63,7 +63,7 @@ public class Tree extends DataRepresentation {
 	/**
 	 * @return the children
 	 */
-	public Set<Tree> getChildren() {
+	public Set<Tree<T>> getChildren() {
 		return children;
 	}
 
@@ -71,7 +71,7 @@ public class Tree extends DataRepresentation {
 	/**
 	 * @param children the children to set
 	 */
-	public void setChildren(Set<Tree> children) {
+	public void setChildren(Set<Tree<T>> children) {
 		this.children = children;
 	}
 
@@ -102,7 +102,7 @@ public class Tree extends DataRepresentation {
 	
 	
 	
-	public void addChild(Tree child) {
+	public void addChild(Tree<T> child) {
 		
 		if (child == null) {
 			System.out.println("Null tree being added...");
@@ -121,7 +121,7 @@ public class Tree extends DataRepresentation {
 		}
 	}
 	
-	public void removeChild(Tree child) {
+	public void removeChild(Tree<T> child) {
 		
 		if (child == null) {
 			System.out.println("Attempt to remove a null child...");
@@ -134,7 +134,7 @@ public class Tree extends DataRepresentation {
 			depth = 0;
 			if (!children.isEmpty()) {
 				depth = 0;
-				Iterator<Tree> it = children.iterator();
+				Iterator<Tree<T>> it = children.iterator();
 				int tempDepth;
 				while (it.hasNext()) {
 					tempDepth = it.next().getDepth();
@@ -163,7 +163,7 @@ public class Tree extends DataRepresentation {
 		}
 		if (!children.isEmpty()) {
 			out += "Children:\n";
-			for (Tree t : children) {
+			for (Tree<T> t : children) {
 				out += "  " + t.getName() + "\n";
 			}
 		}
@@ -171,21 +171,40 @@ public class Tree extends DataRepresentation {
 		return out;
 	}
 	
-	public Cclass getCclass() {
-		return cclass;
+	public T getCclass() {
+		return node;
 	}
 	
-	@Override
-	public Set<Cclass> getClasses() {
-		Set<Cclass> c = new HashSet<Cclass>();
+	public Set<T> getNodes() {
+		Set<T> c = new HashSet<T>();
 		
-		c.add(cclass);
+		c.add(node);
 		
 		if (children.isEmpty()) {
 			return c;
 		}
 		
-		for (Tree child : children) {
+		for (Tree<T> child : children) {
+			c.addAll(child.getNodes());
+		}
+		
+		return c;
+	}
+	
+	/**
+	 * EXTREMELY UNSAFE OMG
+	 */
+	@Override
+	public Set<Cclass> getClasses() {
+		Set<Cclass> c = new HashSet<Cclass>();
+		
+		c.add((Cclass) node);
+		
+		if (children.isEmpty()) {
+			return c;
+		}
+		
+		for (Tree<T> child : children) {
 			c.addAll(child.getClasses());
 		}
 		
@@ -200,8 +219,8 @@ public class Tree extends DataRepresentation {
 			return pairs;
 		}
 		
-		for (Tree child : children) {
-			pairs.add(new Pair<Cclass, Cclass>(cclass, child.cclass));
+		for (Tree<T> child : children) {
+			pairs.add(new Pair<Cclass, Cclass>((Cclass) node, (Cclass) child.node));
 			pairs.addAll(child.getPairs());
 		}
 		
@@ -217,8 +236,8 @@ public class Tree extends DataRepresentation {
 			return pairs;
 		}
 		
-		for (Tree child : children) {
-			pairs.add(new WeightedPair<Cclass, Cclass>(cclass, child.cclass, 1.0));
+		for (Tree<T> child : children) {
+			pairs.add(new WeightedPair<Cclass, Cclass>((Cclass) node, (Cclass) child.node, 1.0));
 			pairs.addAll(child.getWeightedPairs());
 		}
 		

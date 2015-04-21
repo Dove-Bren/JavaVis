@@ -502,6 +502,14 @@ public class JungVisualization {
 			//k what am I gonna have to do? Go through each class and construct a package tree
 			packageMap = new HashMap<String, PackageWrapper>();
 			
+			//lol FIRST we get a list of all package names! Make this easier
+			Set<String> packageNames = new HashSet<String>();
+			for (Cclass c : classes) {
+				if (!packageNames.contains(c.getPackageName())) {
+					packageNames.add(c.getPackageName());
+				}
+			}
+			
 			for (Cclass c : classes) {
 				
 				//check if we have their package in our map.
