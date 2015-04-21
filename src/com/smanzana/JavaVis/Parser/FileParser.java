@@ -490,7 +490,7 @@ public class FileParser {
 				}
 				
 				//String left = line.split("=")[0].trim();
-				if (!line.contains("{")) {
+				if (!line.contains("{") && !(line.contains("(") && line.contains(")"))) {
 					//we have a field (reference!!!)
 					
 					//time for more leg work: how do we go about getting the object?

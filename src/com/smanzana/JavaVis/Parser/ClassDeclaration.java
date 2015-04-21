@@ -97,6 +97,15 @@ public class ClassDeclaration {
 			i++;
 		}
 		
+		//name cleanup
+				if (name.endsWith(";")) {
+					name = name.substring(0, name.length() -1).trim();
+				}
+				if (name.endsWith("{")) {
+					name = name.substring(0, name.length() -1).trim();
+					System.out.println("{ -> " + name);
+				}
+		
 		
 	}
 	

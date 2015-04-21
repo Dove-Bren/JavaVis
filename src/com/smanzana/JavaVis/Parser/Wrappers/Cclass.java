@@ -53,10 +53,10 @@ public class Cclass {
 		formalReferenceMap = new HashMap<Cclass, Integer>();
 		
 		//name cleanup
-		if (name.endsWith("{")) {
+		if (name.endsWith(";")) {
 			name = name.substring(0, name.length() -1).trim();
 		}
-		if (name.endsWith(";")) {
+		if (name.endsWith("{")) {
 			name = name.substring(0, name.length() -1).trim();
 		}
 				
