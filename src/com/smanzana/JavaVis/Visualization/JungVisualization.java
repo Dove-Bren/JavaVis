@@ -444,6 +444,80 @@ public class JungVisualization {
 		}
 	}
 
+	private static final class TreePanel extends JPanel {
+		
+		private JungVisualization vis;
+		
+		private JTextArea TreeComponent;
+		
+		private static final class PackageWrapper {
+			//lol holds a list of classes in this package
+			
+			private String name;
+			
+			private Set<Cclass> classes;
+			
+			public PackageWrapper(String name) {
+				this.name = name;
+				this.classes = new HashSet<Cclass>();
+			}
+			
+			public void addClass(Cclass cclass) {
+				classes.add(cclass);
+			}
+			
+			public boolean contains(Cclass cclass) {
+				return classes.contains(cclass);
+			}
+			
+			@Override
+			public boolean equals(Object o) {
+				return this.toString().equals(o.toString());
+			}
+			
+			@Override
+			public String toString() {
+				return "PackageWrapper[" + this.name + "]";
+			}
+		}
+		
+		private HashMap<String, PackageWrapper> packageMap;
+		
+		public TreePanel(JungVisualization vis) {
+			this.vis = vis;
+			
+			TreeComponent = new JTextArea();
+			TreeComponent.setEditable(false);
+			TreeComponent.setLineWrap(false);
+			
+			packageMap = null;
+		}
+		
+		/**
+		 * Works with the passed classes to reverse-engineer a package tree D:
+		 * @param classes
+		 */
+		public void CreateTree(Set<Cclass> classes) {
+			//k what am I gonna have to do? Go through each class and construct a package tree
+			packageMap = new HashMap<String, PackageWrapper>();
+			
+			for (Cclass c : classes) {
+				
+				//check if we have their package in our map.
+				if (packageMap.keySet().contains(c.getPackageName())) {
+					packageMap.get(c.getPackageName()).addClass(c);
+				} else {
+					packageMap.put(c.getPackageName(), new PackageWrapper(c.getPackageName()));
+				}
+				
+				
+			}
+			
+			System.out.println(packageMap);
+			
+		}
+		
+	}
 	
 	private JFrame window;
 	
