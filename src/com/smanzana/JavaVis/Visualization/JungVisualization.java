@@ -42,8 +42,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import org.apache.commons.collections15.Transformer;
 
@@ -478,6 +481,51 @@ public class JungVisualization {
 		
 		private JTextArea treeComponent;
 		
+		private static class HighlightSelectionListener implements ListSelectionListener {
+			
+			private JungVisualization vis;
+			
+			public HighlightSelectionListener(JungVisualization vis) {
+				this.vis = vis;
+			}
+			
+			@Override
+			public void valueChanged(ListSelectionEvent arg0) {
+				
+				if (arg0.getValueIsAdjusting()) {
+					return;
+				}
+				
+				@SuppressWarnings("unchecked")
+				JList<String> list = (JList<String>) arg0.getSource();
+				
+				if (list.getSelectedIndex() == -1) {
+					vis.infoPanel.setPackageInfo("");
+					vis.infoPanel.setTitle("");
+					vis.infoPanel.setStatInfo("Pick a node on the right to see more information");
+					return;
+				}
+				PickedState<Cclass> info = vis.vv.getPickedVertexState();
+				info.clear();
+				
+				ListModel<String> model = list.getModel();
+								
+				for (int i = arg0.getFirstIndex(); i <= arg0.getLastIndex(); i++) {
+					if (list.isSelectedIndex(i)) {
+						for (Cclass node : vis.layout.getGraph().getVertices()) {
+							if (node.getName().equals(model.getElementAt(i).trim())) {
+								info.pick(node, true);
+								break;
+							}
+						}
+					}
+				}
+				
+				vis.updateInfo();
+			}
+			
+		}
+		
 		private static final class PackageWrapper {
 			//lol holds a list of classes in this package
 			
@@ -595,6 +643,7 @@ public class JungVisualization {
 			//( (DefaultListCellRenderer)  list.getCellRenderer())
 			list.setFont(newFont);
 			list.setVisible(true);
+			list.addListSelectionListener(new HighlightSelectionListener(vis));
 //			list.setMinimumSize(new Dimension(300, 100));
 //			list.setPreferredSize(new Dimension(300, 400));
 			
