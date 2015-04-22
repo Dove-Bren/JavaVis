@@ -11,7 +11,6 @@ import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.geom.Ellipse2D;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -79,121 +78,6 @@ public class JungVisualization {
 	
 	private static final Paint enumColor = new Color(120, 0, 60);
 	
-//	private static final class SelectMousePlugin extends TranslatingGraphMousePlugin {
-//		
-//		JungVisualization vis;
-//		
-//		public SelectMousePlugin(JungVisualization vis) {
-//			super(8);
-//			this.vis = vis;
-//		}
-//		
-////		@Override
-////		public void mousePressed(MouseEvent ev) {
-////			super.mousePressed(ev);
-////			if (vertex == null && edge == null) {
-////				vis.vv.getPickedVertexState().clear();
-////				vis.vv.getPickedEdgeState().clear();
-////			}
-////		}
-//		
-//		@Override
-//	private static final class PickTatle extends ClassicPickSupport<Cclass, WeightedPair<Cclass, Cclass>> {
-//		
-//		private JungVisualization vis;
-//		
-//		public PickTatle(JungVisualization vis) {
-//			this.vis = vis;
-//		}
-//		
-//		
-//		//public void mouseReleased(MouseEvent ev) {
-//		@Override
-//		public Cclass getVertex(Layout<Cclass, WeightedPair<Cclass, Cclass>> layout, double x, double y) {
-//			return super.getVertex(layout, x, y);
-//		}
-//		
-//		@Override
-//		public Cclass getVertex(Layout<Cclass, WeightedPair<Cclass, Cclass>> layout, double x, double y, double radius) {
-//			Cclass result = super.getVertex(layout, x, y, radius);
-//			//super.mouseReleased(ev);
-//			PickedState<Cclass> picks = vis.vv.getPickedVertexState();
-//			
-//			if (picks == null || picks.getSelectedObjects() == null || picks.getSelectedObjects().length == 0) {
-//				return result;
-//			}
-//			
-//			if (picks.getSelectedObjects().length == 1) {
-//				//only 1 thing selected
-//				Cclass c = (Cclass) picks.getSelectedObjects()[0];
-//				vis.infoPanel.setTitle(c.getName());
-//				vis.infoPanel.setPackageInfo(c.getPackageName());
-//				
-//				//gather some info first
-//				//does this class extend anything?
-//				ClassDeclaration decl = c.getDeclaration();
-//				if (decl == null) {
-//					return result;
-//				}
-//				int extendCount = (decl.getExtends() == null ? 1 : 0);
-//				int implementCount = decl.getImplements().size();
-//				vis.infoPanel.setStatInfo("Inherits from: " + (extendCount + implementCount) + (extendCount == 1 ? ", 1 of which it extends." : "") +
-//				"\nContains " + c.getMethods().size() + " methods\n"
-//						+ "");
-//				return result;
-//			}
-//			
-//			String packageName = null;
-//			int methodCount = 0;
-//			
-//			for (Cclass c : picks.getPicked()) {
-//				if (packageName == null) {
-//					packageName = c.getPackageName();
-//				} else if (packageName.equals("") || !packageName.contains(".")) {
-//					//wait until end
-//				} else {
-//					//get most common element
-//					String newPack = "";
-//					String part;
-//					String[] parts = packageName.split("."), otherParts = c.getPackageName().split(".");
-//					int i;
-//					for (i = 0; i < parts.length; i++) {
-//						if (i >= otherParts.length) {
-//							//too far!
-//							break;
-//						}
-//						if (parts[i].equals(otherParts[i])) {
-//							newPack += parts[i];
-//						} else {
-//							break;
-//						}
-//					}
-//					packageName = newPack;
-//				}
-//				
-//				methodCount += (c.getMethods() == null ? 0 : c.getMethods().size());
-//			}
-//
-//			
-//			//after all package name processing
-//			//if it's "" we have no info
-//			if (packageName == null || packageName.equals("")) {
-//				packageName = "No Common Package!";
-//			}
-//			
-//			vis.infoPanel.setPackageInfo(packageName);
-//			vis.infoPanel.setTitle("Selection");
-//			vis.infoPanel.setStatInfo("Selection contains:\n"
-//					+ methodCount + " methods");
-//
-//			
-//			return result;
-//		}
-//		
-//		
-//	}
-	
-	
 	
 	private static final class SearchAction extends AbstractAction {
 		
@@ -217,6 +101,22 @@ public class JungVisualization {
 			vis.performSearch();
 		}
 
+		
+	}
+	
+	private static final class ColorSelectAction extends AbstractAction {
+		
+		private JungVisualization vis;
+		
+		public ColorSelectAction(JungVisualization vis) {
+			this.vis = vis;
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			
+		}
+		
 		
 	}
 	
@@ -479,8 +379,6 @@ public class JungVisualization {
 
 		private JungVisualization vis;
 		
-		private JTextArea treeComponent;
-		
 		private static class HighlightSelectionListener implements ListSelectionListener {
 			
 			private JungVisualization vis;
@@ -565,6 +463,7 @@ public class JungVisualization {
 				classes.add(cclass);
 			}
 			
+			@SuppressWarnings("unused")
 			public boolean contains(Cclass cclass) {
 				return classes.contains(cclass);
 			}
@@ -1289,8 +1188,6 @@ public class JungVisualization {
 		
 		infoPanel.setPackageInfo("");
 		infoPanel.setTitle("Selection");
-		//infoPanel.setStatInfo("Selection contains:\n"
-		//		+ methodCount + " methods");
 	}
 
 }
