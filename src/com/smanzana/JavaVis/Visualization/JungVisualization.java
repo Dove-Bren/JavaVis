@@ -511,8 +511,31 @@ public class JungVisualization {
 				ListModel<String> model = list.getModel();
 								
 				for (int i = arg0.getFirstIndex(); i <= arg0.getLastIndex(); i++) {
-					if (list.isSelectedIndex(i)) {
+					
+					if (!list.isSelectedIndex(i)) {
+						continue;
+					}
+					//we want to do one of two things:
+					//if wehave selected a package, highlight ALL classes in that package
+					
+					//if we select a class, just select that class
+					String line = model.getElementAt(i).trim();
+					
+					if (line.startsWith("[")) {
+						String packName = line.substring(1, line.length() - 1);
+						System.out.println(packName);
+						
 						for (Cclass node : vis.layout.getGraph().getVertices()) {
+							
+							if (node.getPackageName().startsWith(packName)) {
+								info.pick(node, true);
+							}
+							
+						}
+					} else {
+					
+						for (Cclass node : vis.layout.getGraph().getVertices()) {
+							
 							if (node.getName().equals(model.getElementAt(i).trim())) {
 								info.pick(node, true);
 								break;
