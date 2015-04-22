@@ -405,8 +405,6 @@ public class JungVisualization {
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
-
-		private JungVisualization vis;
 		
 		private JTextField title;
 		
@@ -417,7 +415,6 @@ public class JungVisualization {
 		public InfoPanel(JungVisualization vis) {
 			super();
 			
-			this.vis = vis;
 			this.title = new JTextField(18);
 			this.packageInfo = new JTextField(18);
 			this.statInfo = new JTextArea(18,50);
@@ -512,35 +509,12 @@ public class JungVisualization {
 			}
 		}
 		
-		private static class LengthComparator implements Comparator<String> {
-
-			@Override
-			public int compare(String arg0, String arg1) {
-				int l1 = arg0.length();
-				int l2 = arg1.length();
-				
-				if (l1 < l2) {
-					return -1;
-				} else if (l1 == l2) {
-					return 0;
-				}
-				return 1;
-			}
-			
-		}
 		
 		private Tree<PackageWrapper> packageTree;
 		
 		public TreePanel(JungVisualization vis) {
 			this.vis = vis;
-			
-//			
-//			treeComponent = new JTextArea();
-//			treeComponent.setEditable(false);
-//			treeComponent.setLineWrap(false);
-			//add(treeComponent);
-			
-			//packageMap = null;
+
 		}
 		
 		/**
@@ -575,37 +549,21 @@ public class JungVisualization {
 			}
 			
 			//finally have a tree of the packages!
-			//not i just need to print them out in a nice tree format!
-//			for (Tree<PackageWrapper> t : packageTree.getChildren()) {
-//				System.out.println(treeSummary(t, 0));
-//			}
-//			
-//			for (Cclass c : classes) {
-//				
-//				
-//				
-//				//check if we have their package in our map.
-//				if (packageMap.keySet().contains(c.getPackageName())) {
-//					packageMap.get(c.getPackageName()).addClass(c);
-//				} else {
-//					packageMap.put(c.getPackageName(), new PackageWrapper(c.getPackageName()));
-//				}
-//				
-//				
-//			}
-//			
-//			if (packageMap.isEmpty()) {
-//				this.treeComponent.setText("No package tree!");
-//				return;
-//			}
-//			
-//			String treeString = "";
-//			for (PackageWrapper pack : packageMap.values()) {
-//				
-//				for (Cclass c : pack.classes) {
-//					
-//				}
-//			}
+			
+			//now go through classes and match them to their packages
+			PackageWrapper wrap;
+			Tree<PackageWrapper> subTree;
+			for (Cclass c : classes) {
+				subTree = getPackageWrapper(packageTree, c.getPackageName());
+				wrap = subTree.getCclass();
+				
+				if (wrap.name.equals(c.getPackageName())) {
+					wrap.addClass(c);
+				} else {
+					System.out.println("Error encountered when constructing package tree on class [" + "]");
+				}
+			}
+			
 			
 			DefaultListModel<String> listModel = new DefaultListModel<String>();
 			String treeString = "";
@@ -637,15 +595,15 @@ public class JungVisualization {
 			//( (DefaultListCellRenderer)  list.getCellRenderer())
 			list.setFont(newFont);
 			list.setVisible(true);
+//			list.setMinimumSize(new Dimension(300, 100));
+//			list.setPreferredSize(new Dimension(300, 400));
 			
-
-			list.setMinimumSize(new Dimension(300, 150));
-			list.setPreferredSize(new Dimension(300, 150));
+			JScrollPane pane = new JScrollPane(list);
+			pane.setVisible(true);
+			pane.setMinimumSize(new Dimension(300, 100));
+			pane.setPreferredSize(new Dimension(300, 400));
 			
-//			JScrollPane pane = new JScrollPane(list);
-//			pane.setVisible(true);
-			
-			add(list);
+			add(pane);
 			
 		}
 		
@@ -710,7 +668,7 @@ public class JungVisualization {
 			//now classes
 			if (tree.getCclass().classes.size() != 0) {
 				for (Cclass c: tree.getCclass().classes) {
-					buildString += tabLength + c.getName() + System.getProperty("line.separator");
+					buildString += tabLength + "  " + c.getName() + System.getProperty("line.separator");
 				}
 			}
 			
