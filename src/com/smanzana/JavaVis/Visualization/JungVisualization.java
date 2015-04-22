@@ -4,6 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.Stroke;
@@ -17,6 +18,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
@@ -25,16 +27,22 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.DefaultListModel;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 
 import org.apache.commons.collections15.Transformer;
@@ -46,7 +54,6 @@ import com.smanzana.JavaVis.Representation.DataRepresentation.RepresentationType
 import com.smanzana.JavaVis.Representation.Graph.DirectedGraph;
 import com.smanzana.JavaVis.Representation.Tree.Tree;
 import com.smanzana.JavaVis.Util.WeightedPair;
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.Text;
 
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
@@ -399,14 +406,18 @@ public class JungVisualization {
 		 */
 		private static final long serialVersionUID = 1L;
 
+		private JungVisualization vis;
+		
 		private JTextField title;
 		
 		private JTextField packageInfo;
 		
 		private JTextArea statInfo;
 		
-		public InfoPanel() {
+		public InfoPanel(JungVisualization vis) {
 			super();
+			
+			this.vis = vis;
 			this.title = new JTextField(18);
 			this.packageInfo = new JTextField(18);
 			this.statInfo = new JTextArea(18,50);
@@ -427,6 +438,16 @@ public class JungVisualization {
 		    add(title);
 		    add(packageInfo);
 		    add(statInfo);
+		    
+
+		     if (vis.map.keySet().contains(RepresentationType.all)) {
+			     TreePanel packageTreePanel = new TreePanel(vis);
+			     add(packageTreePanel);
+			     packageTreePanel.CreateTree(vis.map.get(RepresentationType.all).getClasses());
+			     packageTreePanel.setMinimumSize(new Dimension(300, 100));
+			     packageTreePanel.setVisible(true);
+		     }
+		    
 		    add(Box.createVerticalGlue());
 
 		    setPreferredSize(new Dimension(300,700));
@@ -513,10 +534,11 @@ public class JungVisualization {
 		public TreePanel(JungVisualization vis) {
 			this.vis = vis;
 			
-			treeComponent = new JTextArea();
-			treeComponent.setEditable(false);
-			treeComponent.setLineWrap(false);
-			add(treeComponent);
+//			
+//			treeComponent = new JTextArea();
+//			treeComponent.setEditable(false);
+//			treeComponent.setLineWrap(false);
+			//add(treeComponent);
 			
 			//packageMap = null;
 		}
@@ -554,9 +576,9 @@ public class JungVisualization {
 			
 			//finally have a tree of the packages!
 			//not i just need to print them out in a nice tree format!
-			for (Tree<PackageWrapper> t : packageTree.getChildren()) {
-				System.out.println(treeSummary(t, 0));
-			}
+//			for (Tree<PackageWrapper> t : packageTree.getChildren()) {
+//				System.out.println(treeSummary(t, 0));
+//			}
 //			
 //			for (Cclass c : classes) {
 //				
@@ -584,6 +606,46 @@ public class JungVisualization {
 //					
 //				}
 //			}
+			
+			DefaultListModel<String> listModel = new DefaultListModel<String>();
+			String treeString = "";
+			
+			for (Tree<PackageWrapper> t : packageTree.getChildren()) {
+				treeString += treeSummary(t, 0);
+			}
+			
+			Scanner parser = new Scanner(treeString);
+			String line; 
+			while (parser.hasNextLine()) {
+				line = parser.nextLine();
+				if (line.trim().isEmpty()) {
+					continue;
+				}
+				
+				listModel.addElement(line);
+			}
+			parser.close();
+			
+			JList<String> list = new JList<String>(listModel);
+			
+			//format list
+			list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+			list.setLayoutOrientation(JList.VERTICAL);
+			( (DefaultListCellRenderer)  list.getCellRenderer()).setHorizontalAlignment(JLabel.LEFT);
+			Font oldFont = list.getFont();
+			Font newFont = new Font(oldFont.getName(), oldFont.getStyle(), 10);
+			//( (DefaultListCellRenderer)  list.getCellRenderer())
+			list.setFont(newFont);
+			list.setVisible(true);
+			
+
+			list.setMinimumSize(new Dimension(300, 150));
+			list.setPreferredSize(new Dimension(300, 150));
+			
+//			JScrollPane pane = new JScrollPane(list);
+//			pane.setVisible(true);
+			
+			add(list);
 			
 		}
 		
@@ -654,6 +716,8 @@ public class JungVisualization {
 			
 			return buildString;
 		}
+		
+		
 		
 	}
 	
@@ -884,12 +948,7 @@ public class JungVisualization {
 		     JPanel content = new JPanel();
 		     content.setLayout(new BorderLayout());
 		     content.setBorder(BorderFactory.createLoweredBevelBorder());
-		     infoPanel = new InfoPanel();
-		     if (map.keySet().contains(RepresentationType.all)) {
-			     TreePanel packageTreePanel = new TreePanel(this);
-			     infoPanel.add(packageTreePanel);
-			     packageTreePanel.CreateTree(map.get(RepresentationType.all).getClasses());
-		     }
+		     infoPanel = new InfoPanel(this);
 		     
 		     //set up two nested frames
 		     window.getContentPane().setLayout(new BorderLayout());
