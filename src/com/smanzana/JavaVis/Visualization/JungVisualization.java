@@ -82,9 +82,9 @@ import edu.uci.ics.jung.visualization.renderers.DefaultVertexLabelRenderer;
 public class JungVisualization {
 	
 	private enum colors {
-		classColor,
-		interfaceColor,
-		enumColor;
+		Class_Color,
+		Interface_Color,
+		Enumeration_Color;
 	}
 	
 	private Map<colors, Color> colorMap;
@@ -123,8 +123,18 @@ public class JungVisualization {
 	
 	private static final class ColorSelectAction extends AbstractAction {
 		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		private static class ColorChangeAction extends AbstractAction {
 			
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			private colors key;
 			
 			private JungVisualization vis;
@@ -167,18 +177,33 @@ public class JungVisualization {
 			JDialog dialog = new JDialog(this.vis.window, "Color Selection");
 			JPanel pane = new JPanel();
 			dialog.add(pane);
-			pane.setLayout(new BoxLayout(pane, BoxLayout.LINE_AXIS));
+			pane.setLayout(new BoxLayout(pane, BoxLayout.PAGE_AXIS));
+//			JPanel buttonPanel = new JPanel();
+//			JPanel labelPanel = new JPanel();
+//			buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.PAGE_AXIS));
+//			labelPanel.setLayout(new BoxLayout(labelPanel, BoxLayout.PAGE_AXIS));
+//			pane.add(labelPanel);
+//			pane.add(buttonPanel);
+			
 			
 			//4 colors to choose: One for each type of 'class' and one for background color. Oh
 			//crap also 1 for highlight color, 1 for edge color, 1 for highlighted edge color!
 			//lets go with the origin 3 first!
 			
 			for (colors c : JungVisualization.colors.values()) {
+				JPanel butPanel = new JPanel();
+				pane.add(butPanel);
+				butPanel.setLayout(new BoxLayout(butPanel, BoxLayout.LINE_AXIS));
 				JButton but = new JButton();
 				but.setAction(new ColorChangeAction(this, vis, c));
 				but.setIcon(new ImageIcon(makeImage(new Rectangle(30, 30), vis.colorMap.get(c))));
 				buttons.put(c, but);
-				pane.add(but);
+				JLabel lab = new JLabel();
+				lab.setText(c.name());
+				lab.setHorizontalTextPosition(JLabel.RIGHT);
+				butPanel.add(lab);
+				butPanel.add(Box.createHorizontalGlue());
+				butPanel.add(but);
 			}
 			
 //			Image classS = makeImage(new Rectangle(30, 30), vis.colorMap.get(colors.classColor));
@@ -188,7 +213,8 @@ public class JungVisualization {
 //			classColorButton.setIcon(new ImageIcon(classS));
 //			dialog.add(classColorButton);
 			
-			dialog.setPreferredSize(new Dimension(300, 200));
+			
+			dialog.setMinimumSize(new Dimension(200, 10));
 			dialog.pack();
 			dialog.setVisible(true);
 		}
@@ -205,7 +231,6 @@ public class JungVisualization {
 		    Graphics2D gr = image.createGraphics();
 		    // move the shape in the region of the image
 		    gr.translate(-r.x, -r.y);
-		    System.out.println(fillColor);
 		    gr.setColor(fillColor);
 		    gr.fill(s);
 		    gr.dispose();
@@ -780,9 +805,9 @@ public class JungVisualization {
 	}
 	
 	private void initColors() {
-		colorMap.put(colors.classColor, new Color(0, 20, 255));
-		colorMap.put(colors.interfaceColor, new Color(0, 60, 60));
-		colorMap.put(colors.enumColor, new Color(120, 00, 60));
+		colorMap.put(colors.Class_Color, new Color(0, 20, 255));
+		colorMap.put(colors.Interface_Color, new Color(0, 60, 60));
+		colorMap.put(colors.Enumeration_Color, new Color(120, 00, 60));
 	}
 	
 	public void setColor(colors type, Color c) {
@@ -864,12 +889,12 @@ public class JungVisualization {
 		        	 }
 		             switch (node.getType()) {
 		             case CLASS:
-		            	 return colorMap.get(colors.classColor);
+		            	 return colorMap.get(colors.Class_Color);
 		             case INTERFACE:
-		            	 return colorMap.get(colors.interfaceColor);
+		            	 return colorMap.get(colors.Interface_Color);
 		             case ENUM:
 		             default:
-		            	 return colorMap.get(colors.enumColor);
+		            	 return colorMap.get(colors.Enumeration_Color);
 		             }
 		         }
 		     };  
