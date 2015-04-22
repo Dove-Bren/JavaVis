@@ -14,6 +14,7 @@ import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,6 +39,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JColorChooser;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -59,6 +61,7 @@ import javax.swing.event.ListSelectionListener;
 
 import org.apache.commons.collections15.Transformer;
 
+import com.smanzana.JavaVis.Driver;
 import com.smanzana.JavaVis.Parser.ClassDeclaration;
 import com.smanzana.JavaVis.Parser.Wrappers.Cclass;
 import com.smanzana.JavaVis.Representation.DataRepresentation;
@@ -120,6 +123,31 @@ public class JungVisualization {
 		}
 
 		
+	}
+	
+	private static final class FileSelectAction extends AbstractAction {
+		
+		private static final long serialVersionUID = 1L;
+		
+		private JungVisualization vis;
+		
+		public FileSelectAction(JungVisualization vis) {
+			this.vis = vis;
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			
+			JFileChooser fc = new JFileChooser("Open A System");
+			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			
+			int result = fc.showDialog(vis.window, "Select Directory");
+			
+			if (result == JFileChooser.APPROVE_OPTION) {
+	            File file = fc.getSelectedFile();
+	            Driver.main(new String[] {file.getAbsolutePath()});
+	        }
+		}
 	}
 	
 	private static final class ColorSelectAction extends AbstractAction {
@@ -1028,6 +1056,16 @@ public class JungVisualization {
 		     
 
 		     JMenuBar menuBar = new JMenuBar();
+		     
+		     //create file menu
+		     JMenu fileMenu = new JMenu();
+		     fileMenu.setText("File");
+		     JMenuItem open = new JMenuItem();
+		     open.setAction(new FileSelectAction(this));
+		     open.setText("Open");
+		     fileMenu.add(open);
+		     
+		     menuBar.add(fileMenu);
 
 		     //Create menu for different views
 		     JMenu viewMenu = new JMenu();
