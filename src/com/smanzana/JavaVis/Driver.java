@@ -15,6 +15,8 @@ import com.smanzana.JavaVis.Parser.Wrappers.Import;
 import com.smanzana.JavaVis.Representation.DataRepresentation.RepresentationType;
 import com.smanzana.JavaVis.Representation.Graph.DirectedGraph;
 import com.smanzana.JavaVis.Representation.Graph.DirectedGraphNode;
+import com.smanzana.JavaVis.Representation.Graph.GraphNode;
+import com.smanzana.JavaVis.Representation.Graph.UndirectedGraph;
 import com.smanzana.JavaVis.Representation.Tree.Tree;
 import com.smanzana.JavaVis.Visualization.JungVisualization;
 
@@ -31,10 +33,28 @@ public final class Driver {
 	
 	
 	public static void main(String[] args) {
-				
+		
 		
 		if (args.length == 0) {
-			printUsage();
+			//printUsage();
+			JungVisualization jvis = new JungVisualization();
+			DirectedGraph graph = new DirectedGraph(); //TODO do undirected not work with getedges?!
+			DirectedGraphNode a, b, c;
+			a = new DirectedGraphNode(new Cclass("a", "com.package.name"));
+			b = new DirectedGraphNode(new Cclass("b", "com.package.name"));
+			c = new DirectedGraphNode(new Cclass("c", "com.package.name.subpackage"));
+			
+			a.addEdge(b);
+			b.addEdge(c);
+			
+			graph.addNode(a);
+			graph.addNode(b);
+			graph.addNode(c);
+			
+			jvis.provideRepresentation(RepresentationType.extend, graph);
+			
+			jvis.Visualize();
+			
 			return;
 		}
 		
