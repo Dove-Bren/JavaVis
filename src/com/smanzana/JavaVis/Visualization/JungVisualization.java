@@ -43,6 +43,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
@@ -159,6 +160,8 @@ public class JungVisualization {
 				vis.setColor(key, color);
 				
 				act.reloadColors();
+				
+				vis.window.repaint();
 			}
 			
 		}
@@ -805,7 +808,7 @@ public class JungVisualization {
 	}
 	
 	private void initColors() {
-		colorMap.put(colors.Class_Color, new Color(0, 20, 255));
+		colorMap.put(colors.Class_Color, new Color(0, 102, 153));
 		colorMap.put(colors.Interface_Color, new Color(0, 60, 60));
 		colorMap.put(colors.Enumeration_Color, new Color(120, 00, 60));
 	}
@@ -1077,7 +1080,8 @@ public class JungVisualization {
 		     JMenu optionMenu = new JMenu();
 		     optionMenu.setText("Options");
 		     optionMenu.setIcon(null);
-		     JButton colorBut = new JButton("Select Colors");
+		     //JButton colorBut = new JButton("Select Colors");
+		     JMenuItem colorBut = new JMenuItem();
 		     colorBut.setAction(new ColorSelectAction(this));
 		     colorBut.setText("Select Colors");
 		     optionMenu.add(colorBut);
