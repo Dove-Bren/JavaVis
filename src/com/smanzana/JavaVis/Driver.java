@@ -69,6 +69,11 @@ public final class Driver {
 	
 		processFile(file);
 		
+		if (classes.isEmpty()) {
+			System.out.println("Unable to locate any .java files!");
+			return;
+		}
+		
 		System.out.println("Got a total of: " + classes.size() + " classes!");
 		
 //		for (Cclass c : classes) {
