@@ -5,11 +5,15 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Paint;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.geom.Ellipse2D;
+import java.awt.image.BufferedImage;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,6 +21,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -28,7 +33,11 @@ import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JColorChooser;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -72,11 +81,19 @@ import edu.uci.ics.jung.visualization.renderers.DefaultVertexLabelRenderer;
 
 public class JungVisualization {
 	
-	private static final Paint classColor = new Color(0, 20, 255);
+	private enum colors {
+		classColor,
+		interfaceColor,
+		enumColor;
+	}
 	
-	private static final Paint interfaceColor = new Color(0, 60, 60);
+	private Map<colors, Color> colorMap;
 	
-	private static final Paint enumColor = new Color(120, 0, 60);
+//	static final Paint classColor = new Color(0, 20, 255);
+//	
+//	private static final Paint interfaceColor = new Color(0, 60, 60);
+//	
+//	private static final Paint enumColor = new Color(120, 0, 60);
 	
 	
 	private static final class SearchAction extends AbstractAction {
@@ -106,17 +123,94 @@ public class JungVisualization {
 	
 	private static final class ColorSelectAction extends AbstractAction {
 		
+		private static class ColorChangeAction extends AbstractAction {
+			
+			private colors key;
+			
+			private JungVisualization vis;
+			
+			ColorSelectAction act;
+			
+			public ColorChangeAction(ColorSelectAction act, JungVisualization vis, colors colorKey) {
+				this.key = colorKey;
+				this.vis = vis;
+				this.act = act;
+			}
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+				Color color = JColorChooser.showDialog(vis.window, "Class Color", vis.colorMap.get(key));
+				
+				if (color == null) {
+					color = Color.BLUE;
+				}
+				
+				vis.setColor(key, color);
+				
+				act.reloadColors();
+			}
+			
+		}
+		
 		private JungVisualization vis;
+		
+		private Map<colors, JButton> buttons;
 		
 		public ColorSelectAction(JungVisualization vis) {
 			this.vis = vis;
+			buttons = new HashMap<colors, JButton>();
 		}
 		
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
+			JDialog dialog = new JDialog(this.vis.window, "Color Selection");
+			JPanel pane = new JPanel();
+			dialog.add(pane);
+			pane.setLayout(new BoxLayout(pane, BoxLayout.LINE_AXIS));
 			
+			//4 colors to choose: One for each type of 'class' and one for background color. Oh
+			//crap also 1 for highlight color, 1 for edge color, 1 for highlighted edge color!
+			//lets go with the origin 3 first!
+			
+			for (colors c : JungVisualization.colors.values()) {
+				JButton but = new JButton();
+				but.setAction(new ColorChangeAction(this, vis, c));
+				but.setIcon(new ImageIcon(makeImage(new Rectangle(30, 30), vis.colorMap.get(c))));
+				buttons.put(c, but);
+				pane.add(but);
+			}
+			
+//			Image classS = makeImage(new Rectangle(30, 30), vis.colorMap.get(colors.classColor));
+//			dialog.setLayout(new BorderLayout());
+//			JButton classColorButton = new JButton();
+//			classColorButton.setAction(new ColorChangeAction(vis, colors.classColor));
+//			classColorButton.setIcon(new ImageIcon(classS));
+//			dialog.add(classColorButton);
+			
+			dialog.setPreferredSize(new Dimension(300, 200));
+			dialog.pack();
+			dialog.setVisible(true);
 		}
 		
+		protected void reloadColors() {
+			for (Entry<colors, JButton> e : buttons.entrySet()) {
+				e.getValue().setIcon(new ImageIcon(makeImage(new Rectangle(30, 30), vis.colorMap.get(e.getKey()))));
+			}
+		}
+		
+		public Image makeImage(Shape s, Color fillColor) {
+		    Rectangle r = s.getBounds();
+		    BufferedImage image = new BufferedImage(r.width, r.height, BufferedImage.TYPE_INT_RGB);
+		    Graphics2D gr = image.createGraphics();
+		    // move the shape in the region of the image
+		    gr.translate(-r.x, -r.y);
+		    System.out.println(fillColor);
+		    gr.setColor(fillColor);
+		    gr.fill(s);
+		    gr.dispose();
+		    return image;
+		}
 		
 	}
 	
@@ -680,6 +774,19 @@ public class JungVisualization {
 		edgeWeight = true;
 		customEnabledTypes = new HashSet<RepresentationType>();
 		customButtons = new HashSet<JCheckBoxMenuItem>();
+		colorMap = new HashMap<colors, Color>();
+		
+		initColors();
+	}
+	
+	private void initColors() {
+		colorMap.put(colors.classColor, new Color(0, 20, 255));
+		colorMap.put(colors.interfaceColor, new Color(0, 60, 60));
+		colorMap.put(colors.enumColor, new Color(120, 00, 60));
+	}
+	
+	public void setColor(colors type, Color c) {
+		colorMap.put(type, c);
 	}
 	
 	public void provideRepresentation(DataRepresentation.RepresentationType type, DataRepresentation data) {
@@ -757,12 +864,12 @@ public class JungVisualization {
 		        	 }
 		             switch (node.getType()) {
 		             case CLASS:
-		            	 return classColor;
+		            	 return colorMap.get(colors.classColor);
 		             case INTERFACE:
-		            	 return interfaceColor;
+		            	 return colorMap.get(colors.interfaceColor);
 		             case ENUM:
 		             default:
-		            	 return enumColor;
+		            	 return colorMap.get(colors.enumColor);
 		             }
 		         }
 		     };  
@@ -945,6 +1052,11 @@ public class JungVisualization {
 		     JMenu optionMenu = new JMenu();
 		     optionMenu.setText("Options");
 		     optionMenu.setIcon(null);
+		     JButton colorBut = new JButton("Select Colors");
+		     colorBut.setAction(new ColorSelectAction(this));
+		     colorBut.setText("Select Colors");
+		     optionMenu.add(colorBut);
+		     
 			     JCheckBoxMenuItem includeObject = new JCheckBoxMenuItem("Include java.lang.Object");
 			     includeObject.setSelected(true);
 			     includeObject.setAction(new IncludeObjectAction(this, includeObject));
