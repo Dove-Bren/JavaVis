@@ -140,6 +140,7 @@ public class JungVisualization {
 			
 			JFileChooser fc = new JFileChooser("Open A System");
 			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			fc.setCurrentDirectory(new File(System.getProperty("user.dir")));
 			
 			int result = fc.showDialog(JungVisualization.window, "Select Directory");
 			
