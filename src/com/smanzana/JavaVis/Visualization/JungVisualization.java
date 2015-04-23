@@ -129,10 +129,10 @@ public class JungVisualization {
 		
 		private static final long serialVersionUID = 1L;
 		
-		private JungVisualization vis;
+		//private JungVisualization vis;
 		
-		public FileSelectAction(JungVisualization vis) {
-			this.vis = vis;
+		public FileSelectAction() {
+			//this.vis = vis;
 		}
 		
 		@Override
@@ -141,7 +141,7 @@ public class JungVisualization {
 			JFileChooser fc = new JFileChooser("Open A System");
 			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			
-			int result = fc.showDialog(vis.window, "Select Directory");
+			int result = fc.showDialog(JungVisualization.window, "Select Directory");
 			
 			if (result == JFileChooser.APPROVE_OPTION) {
 	            File file = fc.getSelectedFile();
@@ -179,7 +179,7 @@ public class JungVisualization {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				
-				Color color = JColorChooser.showDialog(vis.window, "Class Color", vis.colorMap.get(key));
+				Color color = JColorChooser.showDialog(JungVisualization.window, "Class Color", vis.colorMap.get(key));
 				
 				if (color == null) {
 					color = Color.BLUE;
@@ -189,7 +189,7 @@ public class JungVisualization {
 				
 				act.reloadColors();
 				
-				vis.window.repaint();
+				JungVisualization.window.repaint();
 			}
 			
 		}
@@ -205,7 +205,7 @@ public class JungVisualization {
 		
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			JDialog dialog = new JDialog(this.vis.window, "Color Selection");
+			JDialog dialog = new JDialog(JungVisualization.window, "Color Selection");
 			JPanel pane = new JPanel();
 			dialog.add(pane);
 			pane.setLayout(new BoxLayout(pane, BoxLayout.PAGE_AXIS));
@@ -800,7 +800,7 @@ public class JungVisualization {
 		
 	}
 	
-	private JFrame window;
+	private static JFrame window;
 	
 	private String searchTerm;
 	
@@ -833,6 +833,10 @@ public class JungVisualization {
 		colorMap = new HashMap<colors, Color>();
 		
 		initColors();
+		
+		if (JungVisualization.window == null) {
+			JungVisualization.window = new JFrame("JavaVis Code Explorer");
+		}
 	}
 	
 	private void initColors() {
@@ -1034,7 +1038,8 @@ public class JungVisualization {
 		     //vv.setPickSupport(new PickTatle(this));
 		     
 		     
-		     window = new JFrame("JavaVis Code Explorer");
+		     //window = new JFrame("JavaVis Code Explorer");
+		     window.getContentPane().removeAll();
 		     window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		     
 		     JPanel content = new JPanel();
@@ -1061,7 +1066,7 @@ public class JungVisualization {
 		     JMenu fileMenu = new JMenu();
 		     fileMenu.setText("File");
 		     JMenuItem open = new JMenuItem();
-		     open.setAction(new FileSelectAction(this));
+		     open.setAction(new FileSelectAction());
 		     open.setText("Open");
 		     fileMenu.add(open);
 		     
