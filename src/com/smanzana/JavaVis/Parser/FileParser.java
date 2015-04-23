@@ -463,6 +463,11 @@ public class FileParser {
 			return null;		
 		}
 		
+		if (line.contains("interface")) {
+			//we dont need to look in interfaces, as they have no members
+			return refs;
+		}
+		
 		
 		
 		while (input.hasNextLine()) {
