@@ -886,7 +886,7 @@ public class JungVisualization {
 		
 		DataRepresentation dataRep = map.get(type);
 		
-		edu.uci.ics.jung.graph.Graph<Cclass, WeightedPair<Cclass, Cclass>> visGraph = new DirectedSparseGraph<Cclass, WeightedPair<Cclass, Cclass>>();
+		edu.uci.ics.jung.graph.Graph<Cclass, WeightedPair<Cclass, Cclass>> visGraph = new edu.uci.ics.jung.graph.DirectedSparseMultigraph<Cclass, WeightedPair<Cclass, Cclass>>();
 		
 		
 		if (includeObject) {

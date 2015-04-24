@@ -29,4 +29,17 @@ public class DirectedWeightedEdge extends UndirectedWeightedEdge{
 		return this.ends.getRight();
 	}
 	
+	@Override
+	public boolean equals(Object o) {
+		if (toString().equals(o.toString())) {
+			System.out.println("got an equal!");
+		}
+		return toString().equals(o.toString());
+	}
+	
+	@Override
+	public String toString() {
+		return "DirectedWeightedEdge: [" + ends.getLeft().toString() + "] -> [" + ends.getRight().toString() + "] (" + getWeight() + ")";
+	}
+	
 }

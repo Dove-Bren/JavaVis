@@ -39,5 +39,15 @@ public class Pair<a, b> {
 		this.right = right;
 	}
 	
+	@Override
+	public String toString() {
+		return "< " + left.toString() + ", " + right.toString() + ">";
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		return o.toString().equals(toString());
+	}
+	
 	
 }
