@@ -503,6 +503,9 @@ public class FileParser {
 					//and then ignore any parameterization it has
 					String[] lineWords = line.split(" ");
 					for (String word : lineWords) {
+						
+						word = word.trim();
+						
 						if (ClassDeclaration.isModifier(word)) {
 							continue;
 						}
@@ -517,6 +520,8 @@ public class FileParser {
 						if (word.contains("[")) {
 							word = word.substring(0, word.indexOf("["));
 						}
+						
+						word = word.trim();
 						
 						//need package name
 						String pname;

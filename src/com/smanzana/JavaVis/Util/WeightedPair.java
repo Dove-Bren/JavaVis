@@ -1,8 +1,12 @@
 package com.smanzana.JavaVis.Util;
 
+import com.smanzana.JavaVis.Parser.Wrappers.Cclass;
+
 public class WeightedPair<a, b> extends Pair<a, b> {
 
-	double weight;
+	private double weight;
+	
+	private Cclass bestCLASS;
 	
 	public WeightedPair(a valueA, b valueB, double weight) {
 		super(valueA, valueB);
