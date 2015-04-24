@@ -16,6 +16,8 @@ import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -25,6 +27,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.TreeMap;
 
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
@@ -827,7 +830,7 @@ public class JungVisualization {
 	private Set<RepresentationType> customEnabledTypes;
 	
 	public JungVisualization() {
-		map = new HashMap<DataRepresentation.RepresentationType, DataRepresentation>();
+		map = new TreeMap<DataRepresentation.RepresentationType, DataRepresentation>();
 		includeObject = true;
 		edgeWeight = true;
 		edgeDepth = false;
@@ -1080,6 +1083,27 @@ public class JungVisualization {
 		     viewMenu.setText("View");
 		     viewMenu.setIcon(null);
 		     //viewMenu.add(a)
+		     
+//		     //quickly sort our map so the order is the same
+//		     Comparator<Entry<RepresentationType, DataRepresentation> >entryCompare = new Comparator<Entry<RepresentationType, DataRepresentation>>() {
+//
+//				@Override
+//				public int compare(
+//						Entry<RepresentationType, DataRepresentation> arg0,
+//						Entry<RepresentationType, DataRepresentation> arg1) {
+//					return (arg0.getKey().getTitle().compareTo(arg1.getKey().getTitle()));
+//				}
+//		    	 
+//		     };
+//		     List<Entry<RepresentationType, DataRepresentation>> dataList = 
+//		    		 new LinkedList<Entry<RepresentationType, DataRepresentation>> (map.entrySet());
+//		     Collections.sort(dataList, entryCompare);
+//		     
+//		     map.clear();
+//		     for (Entry<RepresentationType, DataRepresentation> entry : dataList) {
+//		    	 map.put(entry.getKey(), entry.getValue());
+//		     }
+//		     
 		     for (DataRepresentation.RepresentationType rt : map.keySet()) {
 		    	 viewMenu.add(new ViewAction(this, rt));
 		     }
