@@ -15,8 +15,6 @@ import com.smanzana.JavaVis.Parser.Wrappers.Import;
 import com.smanzana.JavaVis.Representation.DataRepresentation.RepresentationType;
 import com.smanzana.JavaVis.Representation.Graph.DirectedGraph;
 import com.smanzana.JavaVis.Representation.Graph.DirectedGraphNode;
-import com.smanzana.JavaVis.Representation.Graph.GraphNode;
-import com.smanzana.JavaVis.Representation.Graph.UndirectedGraph;
 import com.smanzana.JavaVis.Representation.Tree.Tree;
 import com.smanzana.JavaVis.Visualization.JungVisualization;
 
@@ -85,7 +83,7 @@ public final class Driver {
 		//System.out.println(extendTree);
 		
 		DirectedGraph implementGraph = classesAsImplementsGraph(classes);
-		Tree extendTree = classesAsExtendsTree(classes);
+		Tree<Cclass> extendTree = classesAsExtendsTree(classes);
 		//TODO TEST
 		
 		DirectedGraph referenceGraph = classesAsReferenceGraph(classes);
@@ -109,6 +107,7 @@ public final class Driver {
 	
 	
 	
+	@SuppressWarnings("unused")
 	private static void printUsage() {
 		System.out.println("Usage:");
 		System.out.println("java -jar [jar name] [dir/file]");
@@ -234,18 +233,18 @@ public final class Driver {
 		
 	}
 	
-	private static Tree classesAsExtendsTree(Set<Cclass> classes) {
+	private static Tree<Cclass> classesAsExtendsTree(Set<Cclass> classes) {
 		
 		if (classes == null || classes.isEmpty()) {
 			return null;
 		}
 		
 		//naive approach - not optimized
-		Map<Cclass, Tree> treeMap = new HashMap<Cclass, Tree>();
+		Map<Cclass, Tree<Cclass>> treeMap = new HashMap<Cclass, Tree<Cclass>>();
 		
 		for (Cclass c : classes) {
 			//go through and create a tree for each class
-			treeMap.put(c, new Tree(c));
+			treeMap.put(c, new Tree<Cclass>(c));
 		}
 		
 
@@ -305,7 +304,7 @@ public final class Driver {
 				
 				//check to see if it's in our map. If not it's a ghost and needs a tree created for it
 				if (!treeMap.containsKey(parent)) {
-					treeMap.put(parent, new Tree(parent));
+					treeMap.put(parent, new Tree<Cclass>(parent));
 				}
 				
 				treeMap.get(c).setParent(treeMap.get(parent));
@@ -316,10 +315,10 @@ public final class Driver {
 		
 		//add a ghost class for the Object class
 		Cclass ob = new Cclass("Object", "java.lang");
-		Tree obTree = new Tree(ob);
+		Tree<Cclass> obTree = new Tree<Cclass>(ob);
 		
 		//finally go and link all classes that don't have a parent to OBJECT, our root
-		for (Tree tree : treeMap.values()) {
+		for (Tree<Cclass> tree : treeMap.values()) {
 			if (tree.getParent() == null) {
 				tree.setParent(obTree);
 			}
