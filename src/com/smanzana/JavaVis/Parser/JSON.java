@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Iterator;
 
+import com.smanzana.JavaVis.Parser.Wrappers.Cclass;
 import com.smanzana.JavaVis.Representation.Graph.DirectedGraph;
 import com.smanzana.JavaVis.Representation.Graph.DirectedGraphNode;
 import com.smanzana.JavaVis.Representation.Graph.DirectedWeightedEdge;
@@ -34,7 +35,7 @@ public final class JSON {
 		}
 	}
 	
-	public static void toJSON(File outfile, Tree root) {
+	public static void toJSON(File outfile, Tree<Cclass> root) {
 		if (!prepOutputFile(outfile)) {
 			return;
 		}
@@ -56,7 +57,7 @@ public final class JSON {
 		
 	}
 	
-	private static void printTree(PrintWriter writer, Tree tree) {
+	private static void printTree(PrintWriter writer, Tree<Cclass> tree) {
 		if (tree == null) {
 			return;
 		}
@@ -72,7 +73,7 @@ public final class JSON {
 //				printTree(writer, child);
 //			}
 //		}
-		Iterator<Tree> childrenIt = tree.getChildren().iterator();
+		Iterator<Tree<Cclass>> childrenIt = tree.getChildren().iterator();
 		while (childrenIt.hasNext()) {
 			printTree(writer, childrenIt.next());
 			if (childrenIt.hasNext()) {

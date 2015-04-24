@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import com.smanzana.JavaVis.Parser.JSON;
+import com.smanzana.JavaVis.Parser.Wrappers.Cclass;
 import com.smanzana.JavaVis.Representation.DataRepresentation;
 import com.smanzana.JavaVis.Representation.Graph.DirectedGraph;
 import com.smanzana.JavaVis.Representation.Tree.Tree;
@@ -31,6 +32,7 @@ public class WebVisualization {
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void Visualize(VisualizationType type, DataRepresentation data) {
 		switch (type) {
 		case IMPLEMENTS:
@@ -43,7 +45,7 @@ public class WebVisualization {
 			if (!(data instanceof Tree)) {
 				break;
 			}
-			JSON.toJSON(extendsTree, (Tree) data);
+			JSON.toJSON(extendsTree, (Tree<Cclass>) data);
 			break;
 		}
 		
