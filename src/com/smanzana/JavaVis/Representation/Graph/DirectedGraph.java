@@ -19,6 +19,8 @@ public class DirectedGraph extends Graph {
 	
 	private Set<DirectedGraphNode> nodes;
 	
+	private Graph omggraph;
+	
 	public DirectedGraph() {
 		nodes = new HashSet<DirectedGraphNode>();
 	}
