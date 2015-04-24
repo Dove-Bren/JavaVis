@@ -822,12 +822,15 @@ public class JungVisualization {
 	
 	private boolean edgeWeight;
 	
+	private boolean edgeDepth;
+	
 	private Set<RepresentationType> customEnabledTypes;
 	
 	public JungVisualization() {
 		map = new HashMap<DataRepresentation.RepresentationType, DataRepresentation>();
 		includeObject = true;
 		edgeWeight = true;
+		edgeDepth = false;
 		customEnabledTypes = new HashSet<RepresentationType>();
 		customButtons = new HashSet<JCheckBoxMenuItem>();
 		colorMap = new HashMap<colors, Color>();
