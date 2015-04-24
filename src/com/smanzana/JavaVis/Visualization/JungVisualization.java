@@ -572,7 +572,6 @@ public class JungVisualization {
 					
 					if (line.startsWith("[")) {
 						String packName = line.substring(1, line.length() - 1);
-						System.out.println(packName);
 						
 						for (Cclass node : vis.layout.getGraph().getVertices()) {
 							
