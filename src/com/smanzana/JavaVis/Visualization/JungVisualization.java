@@ -911,18 +911,22 @@ public class JungVisualization {
 		
 		
 		if (includeObject) {
-//			for (Cclass node : dataRep.getClasses()) {
-//				visGraph.addVertex(node);
-//			}
+			if (deadNodes) {
+				for (Cclass node : dataRep.getClasses()) {
+					visGraph.addVertex(node);
+				}
+			}
 			for (WeightedPair<Cclass, Cclass> e : dataRep.getWeightedPairs()) {
 				visGraph.addEdge(e, e.getLeft(), e.getRight());
 			}
 		} else {
-//			for (Cclass node: dataRep.getClasses()) {
-//				if (!(node.getPackageName() + "." + node.getName()).equals("java.lang.Object")) {
-//					visGraph.addVertex(node);
-//				}
-//			}
+			if (deadNodes) {
+				for (Cclass node: dataRep.getClasses()) {
+					if (!(node.getPackageName() + "." + node.getName()).equals("java.lang.Object")) {
+						visGraph.addVertex(node);
+					}
+				}
+			}
 			for (WeightedPair<Cclass, Cclass> e : dataRep.getWeightedPairs()) {
 				if ((e.getLeft().getPackageName() + "." + e.getLeft().getName()).equals("java.lang.Object") || (e.getRight().getPackageName() + "." + e.getRight().getName()).equals("java.lang.Object")) {
 					continue;
