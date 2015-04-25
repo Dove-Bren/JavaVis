@@ -34,9 +34,10 @@ public class ClassDeclaration {
 			return;
 		}
 		
-//		if (declarationLine.endsWith("{")) {
-//			declarationLine = declarationLine.substring(0, declarationLine.length() - 2);
-//		}
+		if (declarationLine.endsWith("{")) {
+			declarationLine = declarationLine.substring(0, declarationLine.length() - 1);
+			declarationLine = declarationLine.trim();
+		}
 		
 		String[] tokens = declarationLine.split(" ");
 		int i = 0;
@@ -115,23 +116,23 @@ public class ClassDeclaration {
 		}
 		
 		//name cleanup
-		if (extendString == null) {
-				if (name.endsWith(";")) {
-					name = name.substring(0, name.length() -1).trim();
-				}
-				if (name.endsWith("{")) {
-					name = name.substring(0, name.length() -1).trim();
-					System.out.println("{ -> " + name);
-				}
-		} else {
-				if (extendString.endsWith(";")) {
-					extendString = extendString.substring(0, extendString.length() -1).trim();
-				}
-				if (extendString.endsWith("{")) {
-					extendString = extendString.substring(0, extendString.length() -1).trim();
-					System.out.println("{ -> " + extendString);
-				}
-		}
+//		if (extendString == null) {
+//				if (name.endsWith(";")) {
+//					name = name.substring(0, name.length() -1).trim();
+//				}
+//				if (name.endsWith("{")) {
+//					name = name.substring(0, name.length() -1).trim();
+//					System.out.println("{ -> " + name);
+//				}
+//		} else {
+//				if (extendString.endsWith(";")) {
+//					extendString = extendString.substring(0, extendString.length() -1).trim();
+//				}
+//				if (extendString.endsWith("{")) {
+//					extendString = extendString.substring(0, extendString.length() -1).trim();
+//					System.out.println("{ -> " + extendString);
+//				}
+//		}
 				
 		System.out.println(name + " | " + extendString);
 	}
