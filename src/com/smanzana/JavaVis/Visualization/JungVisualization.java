@@ -825,7 +825,7 @@ public class JungVisualization {
 	
 	private boolean edgeWeight;
 	
-	private boolean edgeDepth;
+	private boolean deadNodes;
 	
 	private Set<RepresentationType> customEnabledTypes;
 	
@@ -833,7 +833,7 @@ public class JungVisualization {
 		map = new TreeMap<DataRepresentation.RepresentationType, DataRepresentation>();
 		includeObject = true;
 		edgeWeight = true;
-		edgeDepth = false;
+		deadNodes = false;
 		customEnabledTypes = new HashSet<RepresentationType>();
 		customButtons = new HashSet<JCheckBoxMenuItem>();
 		colorMap = new HashMap<colors, Color>();
@@ -897,11 +897,11 @@ public class JungVisualization {
 				visGraph.addEdge(e, e.getLeft(), e.getRight());
 			}
 		} else {
-			for (Cclass node: dataRep.getClasses()) {
-				if (!(node.getPackageName() + "." + node.getName()).equals("java.lang.Object")) {
-					visGraph.addVertex(node);
-				}
-			}
+//			for (Cclass node: dataRep.getClasses()) {
+//				if (!(node.getPackageName() + "." + node.getName()).equals("java.lang.Object")) {
+//					visGraph.addVertex(node);
+//				}
+//			}
 			for (WeightedPair<Cclass, Cclass> e : dataRep.getWeightedPairs()) {
 				if ((e.getLeft().getPackageName() + "." + e.getLeft().getName()).equals("java.lang.Object") || (e.getRight().getPackageName() + "." + e.getRight().getName()).equals("java.lang.Object")) {
 					continue;

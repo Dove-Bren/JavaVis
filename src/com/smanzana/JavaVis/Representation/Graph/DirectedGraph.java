@@ -35,7 +35,7 @@ public class DirectedGraph extends Graph {
 	}
 	
 	public Set<UndirectedWeightedEdge> getEdges() {
-		Set<UndirectedWeightedEdge> edges = new TreeSet<UndirectedWeightedEdge>();
+		Set<UndirectedWeightedEdge> edges = new HashSet<UndirectedWeightedEdge>();
 		for (DirectedGraphNode node : nodes) {
 			edges.addAll(node.getEdges());
 		}
@@ -44,7 +44,7 @@ public class DirectedGraph extends Graph {
 	}
 	
 	public Set<DirectedWeightedEdge> getWeightedEdges() {
-		Set<DirectedWeightedEdge> edges = new TreeSet<DirectedWeightedEdge>();
+		Set<DirectedWeightedEdge> edges = new HashSet<DirectedWeightedEdge>();
 		for (DirectedGraphNode node : nodes) {
 			edges.addAll(node.getEdges());
 		}

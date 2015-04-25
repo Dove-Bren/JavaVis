@@ -56,7 +56,7 @@ public class ClassDeclaration {
 			//tokens[i] is not a modifier. Hopefully it's class!
 			if (tokens[i].equals("class") || tokens[i].equals("interface") || tokens[i].equals("@interface") || tokens[i].equals("enum")) {
 				this.name = tokens[i + 1];
-				if (name.contains("<")) {
+				if (name.contains("<") && !name.contains(">")) {
 					this.name += tokens[i + 2].substring(0, tokens[i+2].indexOf(">") + 1);
 							
 				}
