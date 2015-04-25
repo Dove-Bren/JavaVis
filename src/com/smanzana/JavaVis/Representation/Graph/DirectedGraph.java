@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Set;
+import java.util.TreeSet;
 
 import com.smanzana.JavaVis.Parser.Wrappers.Cclass;
 import com.smanzana.JavaVis.Representation.DataRepresentation;
@@ -19,14 +20,12 @@ public class DirectedGraph extends Graph {
 	
 	private Set<DirectedGraphNode> nodes;
 	
-	private Graph omggraph;
-	
 	public DirectedGraph() {
-		nodes = new HashSet<DirectedGraphNode>();
+		nodes = new TreeSet<DirectedGraphNode>();
 	}
 
 	public Set<GraphNode> getNodes() {
-		return new HashSet<GraphNode>(nodes);
+		return new TreeSet<GraphNode>(nodes);
 	}
 	
 	public Set<DirectedGraphNode> getDirectedNodes() {
@@ -34,7 +33,7 @@ public class DirectedGraph extends Graph {
 	}
 	
 	public Set<UndirectedWeightedEdge> getEdges() {
-		Set<UndirectedWeightedEdge> edges = new HashSet<UndirectedWeightedEdge>();
+		Set<UndirectedWeightedEdge> edges = new TreeSet<UndirectedWeightedEdge>();
 		for (DirectedGraphNode node : nodes) {
 			edges.addAll(node.getEdges());
 		}
@@ -96,11 +95,13 @@ public class DirectedGraph extends Graph {
 						for (DirectedWeightedEdge e : node.getEdges()) {
 							cacheNode.addEdge((DirectedGraphNode) e.getDestination(), e.getWeight());
 						}
+						break;
 					}
 				}
 				
 				if (!foundone) {
 					//add new
+					System.out.println("Adding new node in merge: " + node.getUniqueKey());
 					nodes.add(node);
 				}
 				

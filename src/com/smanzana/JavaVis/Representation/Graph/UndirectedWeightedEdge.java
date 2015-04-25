@@ -3,7 +3,7 @@ package com.smanzana.JavaVis.Representation.Graph;
 import com.smanzana.JavaVis.Util.Pair;
 import com.smanzana.JavaVis.Util.WeightedPair;
 
-public class UndirectedWeightedEdge {
+public class UndirectedWeightedEdge implements Comparable<UndirectedWeightedEdge> {
 	
 	//protected double weight;
 	
@@ -47,6 +47,11 @@ public class UndirectedWeightedEdge {
 	@Override
 	public boolean equals(Object o) {
 		return o.toString().equals(this.toString());
+	}
+
+	@Override
+	public int compareTo(UndirectedWeightedEdge o) {
+		return ends.getLeft().cclass.compareTo(o.ends.getLeft().cclass);
 	}
 	
 }

@@ -1,7 +1,7 @@
 package com.smanzana.JavaVis.Representation.Graph;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import com.smanzana.JavaVis.Parser.Wrappers.Cclass;
 
@@ -21,7 +21,7 @@ public class DirectedGraphNode extends GraphNode{
 	
 	public DirectedGraphNode(Cclass cl) {
 		this.name = cl.getName();
-		this.edges = new HashSet<DirectedWeightedEdge>();
+		this.edges = new TreeSet<DirectedWeightedEdge>();
 		this.uniqueKey = (cl.getPackageName().substring(cl.getPackageName().lastIndexOf(".") + 1)) + "." + this.name;
 		this.cclass = cl;
 	}
@@ -51,6 +51,8 @@ public class DirectedGraphNode extends GraphNode{
 	}
 	
 	public boolean addEdge(DirectedGraphNode to, double weight) {
+		
+		
 		DirectedWeightedEdge edge = new DirectedWeightedEdge(this, to, weight);
 		
 		return edges.add(edge);

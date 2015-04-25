@@ -13,7 +13,16 @@ import com.smanzana.JavaVis.Parser.JavaLangDictionary;
  * @author Skyler
  *
  */
-public class Cclass {
+public class Cclass implements Comparable<Cclass> {
+	
+	public int compareTo(Cclass o1) {
+
+		if (this.equals(o1)) {
+			return 0;
+		}
+			
+		return ((packageName + "." + name).compareTo(o1.packageName + "." + o1.name));
+	}
 	
 	public enum Type {
 		CLASS,

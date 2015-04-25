@@ -2,7 +2,7 @@ package com.smanzana.JavaVis.Representation.Graph;
 
 import com.smanzana.JavaVis.Parser.Wrappers.Cclass;
 
-public class GraphNode {
+public class GraphNode implements Comparable<GraphNode>{
 	
 	private String name;
 	
@@ -58,6 +58,11 @@ public class GraphNode {
 			return true;
 		}
 		return false;
+	}
+	
+	@Override
+	public int compareTo(GraphNode node) {
+		return cclass.compareTo(node.cclass);
 	}
 	
 }

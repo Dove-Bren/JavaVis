@@ -2,7 +2,7 @@ package com.smanzana.JavaVis.Representation.Graph;
 
 import com.smanzana.JavaVis.Util.WeightedPair;
 
-public class DirectedWeightedEdge extends UndirectedWeightedEdge{
+public class DirectedWeightedEdge extends UndirectedWeightedEdge implements Comparable<UndirectedWeightedEdge>{
 	
 	public DirectedWeightedEdge(DirectedGraphNode source, DirectedGraphNode dest) {
 		this(source, dest, 1.0);
@@ -39,7 +39,16 @@ public class DirectedWeightedEdge extends UndirectedWeightedEdge{
 	
 	@Override
 	public String toString() {
-		return "DirectedWeightedEdge: [" + ends.getLeft().toString() + "] -> [" + ends.getRight().toString() + "] (" + getWeight() + ")";
+		return "DirectedWeightedEdge: [" + ends.getLeft().getUniqueKey() + "] -> [" + ends.getRight().getUniqueKey() + "] (" + getWeight() + ")";
+	}
+	
+	@Override
+	public int compareTo(UndirectedWeightedEdge e) {
+		if (getSource().compareTo(e.getEnds().getLeft()) == 0) {
+			//also check end points
+			return getDestination().compareTo(e.getEnds().getRight());
+		}
+		else return (getSource().compareTo(e.getEnds().getLeft()));
 	}
 	
 }
