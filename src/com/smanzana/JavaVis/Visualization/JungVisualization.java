@@ -91,7 +91,11 @@ public class JungVisualization {
 	private enum colors {
 		Class_Color,
 		Interface_Color,
-		Enumeration_Color;
+		Enumeration_Color,
+		Node_Hightlight,
+		Edge_Color,
+		Edge_Highlight,
+		Background_Color;
 	}
 	
 	private Map<colors, Color> colorMap;
@@ -192,6 +196,7 @@ public class JungVisualization {
 				vis.setColor(key, color);
 				
 				act.reloadColors();
+			    vis.vv.setBackground(vis.colorMap.get(colors.Background_Color));
 				
 				JungVisualization.window.repaint();
 			}
@@ -870,6 +875,10 @@ public class JungVisualization {
 		colorMap.put(colors.Class_Color, new Color(0, 102, 153));
 		colorMap.put(colors.Interface_Color, new Color(0, 60, 60));
 		colorMap.put(colors.Enumeration_Color, new Color(120, 00, 60));
+		colorMap.put(colors.Edge_Color, new Color(255, 255, 255));
+		colorMap.put(colors.Edge_Highlight, new Color(0, 255, 0));
+		colorMap.put(colors.Background_Color, new Color(0, 0, 0));
+		colorMap.put(colors.Node_Hightlight, new Color(0, 255, 0));
 	}
 	
 	public void setColor(colors type, Color c) {
@@ -971,9 +980,9 @@ public class JungVisualization {
 				public Paint transform(WeightedPair<Cclass, Cclass> arg0) {
 					updateInfo();
 					if (vv.getPickedEdgeState().isPicked(arg0)) {
-						return Color.GREEN;
+						return colorMap.get(colors.Edge_Highlight);
 					} else {
-						return Color.WHITE;
+						return colorMap.get(colors.Edge_Color);
 					}
 				}
 		    	 
@@ -1010,7 +1019,7 @@ public class JungVisualization {
 		     Transformer<Cclass, Paint> vertexOutline = new Transformer<Cclass, Paint>() {
 		    	 public Paint transform(Cclass node) {
 		    		if (vv.getPickedVertexState().isPicked(node)) {
-		    			return Color.GREEN;
+		    			return colorMap.get(colors.Node_Hightlight);
 		    		} else {
 		    			return Color.BLACK;
 		    		}
@@ -1087,7 +1096,7 @@ public class JungVisualization {
 		     JToolBar toolbar = new JToolBar();
 		     toolbar.add(new SearchAction(this));
 		     content.add(toolbar, BorderLayout.PAGE_START);
-		     vv.setBackground(Color.BLACK);
+		     vv.setBackground(colorMap.get(colors.Background_Color));
 		     content.add(vv, BorderLayout.CENTER); 
 		     
 
