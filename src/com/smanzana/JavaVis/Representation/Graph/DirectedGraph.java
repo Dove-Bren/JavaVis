@@ -20,6 +20,8 @@ public class DirectedGraph extends Graph {
 	
 	private Set<DirectedGraphNode> nodes;
 	
+	private Graph luaete;
+	
 	public DirectedGraph() {
 		nodes = new TreeSet<DirectedGraphNode>();
 	}
@@ -42,7 +44,7 @@ public class DirectedGraph extends Graph {
 	}
 	
 	public Set<DirectedWeightedEdge> getWeightedEdges() {
-		Set<DirectedWeightedEdge> edges = new HashSet<DirectedWeightedEdge>();
+		Set<DirectedWeightedEdge> edges = new TreeSet<DirectedWeightedEdge>();
 		for (DirectedGraphNode node : nodes) {
 			edges.addAll(node.getEdges());
 		}
@@ -51,7 +53,17 @@ public class DirectedGraph extends Graph {
 	}
 	
 	public boolean addNode(DirectedGraphNode node) {
-		return nodes.add(node);
+		
+		for (DirectedGraphNode mynode : nodes) {
+			if (mynode.cclass.equals(node.cclass)) {
+				System.out.println("duplicate!");
+			}
+		}
+		
+		//return nodes.add(node);
+		boolean in = nodes.add(node);
+		//System.out.println(in);
+		return in;
 	}
 	
 	//TODO get remove stuffs
@@ -77,37 +89,37 @@ public class DirectedGraph extends Graph {
 	 * @param data
 	 */
 	public void mergeFrom(DataRepresentation data) {
-		if (data instanceof DirectedGraph) {
-			//easier if we can use member functions
-			DirectedGraph otherGraph = (DirectedGraph) data;
-			DirectedGraphNode cacheNode;
-			for (DirectedGraphNode node : otherGraph.nodes) {
-				
-				//iteratorate over it :/
-				ListIterator<DirectedGraphNode> it = (new LinkedList<DirectedGraphNode>(nodes)).listIterator();
-				boolean foundone = false;
-				while (it.hasNext()) {
-					cacheNode = it.next();
-					if (cacheNode.getCclass().equals(node.getCclass())) {
-						//combine
-						foundone = true;
-						
-						for (DirectedWeightedEdge e : node.getEdges()) {
-							cacheNode.addEdge((DirectedGraphNode) e.getDestination(), e.getWeight());
-						}
-						break;
-					}
-				}
-				
-				if (!foundone) {
-					//add new
-					System.out.println("Adding new node in merge: " + node.getUniqueKey());
-					nodes.add(node);
-				}
-				
-			}
-			return;
-		}
+//		if (data instanceof DirectedGraph) {
+//			//easier if we can use member functions
+//			DirectedGraph otherGraph = (DirectedGraph) data;
+//			DirectedGraphNode cacheNode;
+//			for (DirectedGraphNode node : otherGraph.nodes) {
+//				
+//				//iteratorate over it :/
+//				ListIterator<DirectedGraphNode> it = (new LinkedList<DirectedGraphNode>(nodes)).listIterator();
+//				boolean foundone = false;
+//				while (it.hasNext()) {
+//					cacheNode = it.next();
+//					if (cacheNode.getCclass().equals(node.getCclass())) {
+//						//combine
+//						foundone = true;
+//						
+//						for (DirectedWeightedEdge e : node.getEdges()) {
+//							cacheNode.addEdge((DirectedGraphNode) e.getDestination(), e.getWeight());
+//						}
+//						break;
+//					}
+//				}
+//				
+//				if (!foundone) {
+//					//add new
+//					//System.out.println("Adding new node in merge: " + node.getUniqueKey());
+//					addNode(node);
+//				}
+//				
+//			}
+//			return;
+//		}
 		
 		//not a directed graph. how about a tree?
 		//if (data instanceof Tree) {
@@ -135,15 +147,15 @@ public class DirectedGraph extends Graph {
 				
 				if (srcNode == null) {
 					srcNode = new DirectedGraphNode(src);
-					nodes.add(srcNode);
+					addNode(srcNode);
 				}
 				if (destNode == null) {
 					destNode = new DirectedGraphNode(dest);
-					nodes.add(destNode);
+					addNode(destNode);
 				}
 				
 				//now made the edges from src to dest
-				srcNode.addEdge(destNode);
+				System.out.println(srcNode.addEdge(destNode));
 			}
 			
 			

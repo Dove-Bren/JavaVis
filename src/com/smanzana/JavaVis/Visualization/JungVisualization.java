@@ -890,9 +890,9 @@ public class JungVisualization {
 		
 		
 		if (includeObject) {
-			for (Cclass node : dataRep.getClasses()) {
-				visGraph.addVertex(node);
-			}
+//			for (Cclass node : dataRep.getClasses()) {
+//				visGraph.addVertex(node);
+//			}
 			for (WeightedPair<Cclass, Cclass> e : dataRep.getWeightedPairs()) {
 				visGraph.addEdge(e, e.getLeft(), e.getRight());
 			}

@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import com.smanzana.JavaVis.Parser.ClassDeclaration;
 import com.smanzana.JavaVis.Parser.FileParser;
@@ -63,7 +65,7 @@ public final class Driver {
 			return;
 		}
 		fileP = new FileParser();
-		classes = new HashSet<Cclass>();
+		classes = new TreeSet<Cclass>();
 	
 		processFile(file);
 		
@@ -146,7 +148,7 @@ public final class Driver {
 		}
 		
 		//also a naive approach, add all classes as nodes and then do edges
-		Map<Cclass, DirectedGraphNode> nodeMap = new HashMap<Cclass, DirectedGraphNode>();
+		Map<Cclass, DirectedGraphNode> nodeMap = new TreeMap<Cclass, DirectedGraphNode>();
 		DirectedGraph graph = new DirectedGraph();
 		
 		for (Cclass c : classes) {
@@ -240,7 +242,7 @@ public final class Driver {
 		}
 		
 		//naive approach - not optimized
-		Map<Cclass, Tree<Cclass>> treeMap = new HashMap<Cclass, Tree<Cclass>>();
+		Map<Cclass, Tree<Cclass>> treeMap = new TreeMap<Cclass, Tree<Cclass>>();
 		
 		for (Cclass c : classes) {
 			//go through and create a tree for each class
@@ -335,7 +337,7 @@ public final class Driver {
 		}
 		
 		//also a naive approach, add all classes as nodes and then do edges
-		Map<Cclass, DirectedGraphNode> nodeMap = new HashMap<Cclass, DirectedGraphNode>();
+		Map<Cclass, DirectedGraphNode> nodeMap = new TreeMap<Cclass, DirectedGraphNode>();
 		DirectedGraph graph = new DirectedGraph();
 		
 		for (Cclass c : classes) {
@@ -343,6 +345,7 @@ public final class Driver {
 			DirectedGraphNode n = new DirectedGraphNode(c);
 			graph.addNode(n);
 			if (!nodeMap.containsKey(c)) {
+				System.out.println("Adding new class: " + c.getName());
 				nodeMap.put(c, n);
 			}
 			
@@ -357,6 +360,7 @@ public final class Driver {
 				}
 				if (rN == null) {
 					rN = new DirectedGraphNode(refClass);
+					System.out.println("Adding new class as extension: " + refClass.getName());
 					nodeMap.put(refClass, rN);
 				}
 				n.addEdge(rN, c.getFormalReferenceCount(refClass));

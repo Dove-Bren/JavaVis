@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.TreeMap;
 import java.util.regex.Pattern;
 
 import com.smanzana.JavaVis.Parser.Wrappers.Cclass;
@@ -385,7 +386,7 @@ public class FileParser {
 			return null;
 		}
 		
-		Map<Cclass, Integer> refs = new HashMap<Cclass, Integer>();
+		Map<Cclass, Integer> refs = new TreeMap<Cclass, Integer>();
 		
 		//need to get into class declaration before we start!
 		String line;
@@ -629,7 +630,7 @@ public class FileParser {
 			return null;
 		}
 		
-		Map<Cclass, Integer> refs = new HashMap<Cclass, Integer>();
+		Map<Cclass, Integer> refs = new TreeMap<Cclass, Integer>();
 		
 		
 		

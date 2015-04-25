@@ -6,6 +6,8 @@ public class GraphNode implements Comparable<GraphNode>{
 	
 	private String name;
 	
+	private DirectedGraphNode naetaet;
+	
 	protected Cclass cclass;
 	
 	/**
@@ -48,16 +50,7 @@ public class GraphNode implements Comparable<GraphNode>{
 	
 	@Override
 	public boolean equals(Object o) {
-		if (!(o instanceof GraphNode)) {
-			return false;
-		}
-		
-		GraphNode n = (GraphNode) o;
-		
-		if (n.uniqueKey == uniqueKey) {
-			return true;
-		}
-		return false;
+		return uniqueKey.equals(o.toString());
 	}
 	
 	@Override
