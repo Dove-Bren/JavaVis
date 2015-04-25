@@ -135,7 +135,11 @@ public final class Driver {
 			}
 	
 			Cclass cl = fileP.getcClass();
-			classes.add(cl);
+			if (cl == null) {
+				System.out.println("Extreme error! Got error class!");
+			} else {
+				classes.add(cl);
+			}
 
 			
 		}
