@@ -1191,6 +1191,11 @@ public class JungVisualization {
 			     edgeWeight.setAction(new EdgeWeightAction(this, edgeWeight));
 			     edgeWeight.setText("Visualize Edge Weights");
 			     optionMenu.add(edgeWeight);
+			     JCheckBoxMenuItem deadNodes = new JCheckBoxMenuItem();
+			     deadNodes.setAction(new DeadNodeAction(this, deadNodes));
+			     deadNodes.setSelected(false);
+			     deadNodes.setText("Display Dead Nodes");
+			     optionMenu.add(deadNodes);
 			     optionMenu.addSeparator();
 			     	for (RepresentationType enableType : map.keySet()) {
 			     		if (enableType == RepresentationType.custom || enableType == RepresentationType.all) {
