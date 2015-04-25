@@ -373,9 +373,30 @@ public class JungVisualization {
 			} else {
 				vis.edgeWeight = false;
 			}
-			//vis.Visualize(vis.lastType);
+			vis.Visualize(vis.lastType);
 		}
 		
+	}
+	
+	private static final class DeadNodeAction extends AbstractAction {
+		private JungVisualization vis;
+		
+		private AbstractButton but;
+		
+		public DeadNodeAction(JungVisualization vis, AbstractButton but) {
+			this.vis = vis;
+			this.but = but;
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			if (but.isSelected())  {
+				vis.deadNodes = true;
+			} else {
+				vis.deadNodes = false;
+			}
+			vis.Visualize(vis.lastType);
+		}
 	}
 	
 	private static final class LayoutAction extends AbstractAction{
