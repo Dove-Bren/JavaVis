@@ -133,8 +133,6 @@ public class ClassDeclaration {
 //					System.out.println("{ -> " + extendString);
 //				}
 //		}
-				
-		System.out.println(name + " | " + extendString);
 	}
 	
 	public static boolean isModifier(String str) {

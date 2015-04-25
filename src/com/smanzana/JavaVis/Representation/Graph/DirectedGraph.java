@@ -155,7 +155,7 @@ public class DirectedGraph extends Graph {
 				}
 				
 				//now made the edges from src to dest
-				System.out.println(srcNode.addEdge(destNode));
+				srcNode.addEdge(destNode);
 			}
 			
 			
