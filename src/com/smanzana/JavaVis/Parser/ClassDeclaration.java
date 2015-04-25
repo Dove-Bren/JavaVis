@@ -34,6 +34,10 @@ public class ClassDeclaration {
 			return;
 		}
 		
+//		if (declarationLine.endsWith("{")) {
+//			declarationLine = declarationLine.substring(0, declarationLine.length() - 2);
+//		}
+		
 		String[] tokens = declarationLine.split(" ");
 		int i = 0;
 		
@@ -91,10 +95,10 @@ public class ClassDeclaration {
 					}
 				}
 				
-				//check and make sure it doesn't include trailing {
-				if (this.extendString.endsWith("{")) {
-					extendString = extendString.substring(0, this.extendString.length() - 2);
-				}
+//				//check and make sure it doesn't include trailing {
+//				if (this.extendString.endsWith("{")) {
+//					extendString = extendString.substring(0, this.extendString.length() - 2);
+//				}
 				
 				i = i+2;
 				continue;
@@ -111,6 +115,7 @@ public class ClassDeclaration {
 		}
 		
 		//name cleanup
+		if (extendString == null) {
 				if (name.endsWith(";")) {
 					name = name.substring(0, name.length() -1).trim();
 				}
@@ -118,8 +123,17 @@ public class ClassDeclaration {
 					name = name.substring(0, name.length() -1).trim();
 					System.out.println("{ -> " + name);
 				}
-		
-		
+		} else {
+				if (extendString.endsWith(";")) {
+					extendString = extendString.substring(0, extendString.length() -1).trim();
+				}
+				if (extendString.endsWith("{")) {
+					extendString = extendString.substring(0, extendString.length() -1).trim();
+					System.out.println("{ -> " + extendString);
+				}
+		}
+				
+		System.out.println(name + " | " + extendString);
 	}
 	
 	public static boolean isModifier(String str) {
