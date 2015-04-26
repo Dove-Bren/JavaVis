@@ -265,7 +265,7 @@ public class JungVisualization {
 			}
 		}
 		
-		public Image makeImage(Shape s, Color fillColor) {
+		public static Image makeImage(Shape s, Color fillColor) {
 		    Rectangle r = s.getBounds();
 		    BufferedImage image = new BufferedImage(r.width, r.height, BufferedImage.TYPE_INT_RGB);
 		    Graphics2D gr = image.createGraphics();
@@ -1098,6 +1098,18 @@ public class JungVisualization {
 		     content.add(toolbar, BorderLayout.PAGE_START);
 		     vv.setBackground(colorMap.get(colors.Background_Color));
 		     content.add(vv, BorderLayout.CENTER); 
+		     
+		     JToolBar colorlegend = new JToolBar();
+		     colorlegend.setLayout(new BoxLayout(colorlegend, BoxLayout.LINE_AXIS));
+		     colorlegend.setFloatable(false);
+		     for (colors c : colorMap.keySet()) {
+		    	 JLabel lab = new JLabel(c.name().substring(0, c.name().indexOf("_")), new ImageIcon(ColorSelectAction.makeImage(new Rectangle(30, 30), colorMap.get(c))), JLabel.CENTER);
+		    	 lab.setHorizontalTextPosition(JLabel.LEADING);
+		    	 lab.setVerticalTextPosition(JLabel.CENTER);
+		    	 colorlegend.add(lab);
+		    	 colorlegend.add(Box.createHorizontalGlue());
+		     }
+		     content.add(colorlegend, BorderLayout.PAGE_END);
 		     
 
 		     JMenuBar menuBar = new JMenuBar();
