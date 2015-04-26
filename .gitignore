@@ -3,4 +3,9 @@
 bin/
 .settings
 java.policy.applet
-JSONOut.json
+AirMapView
+Decor
+CircleProgress
+EnderDragonFridays
+*.html
+*.jar
