@@ -239,7 +239,7 @@ public class JungVisualization {
 				but.setIcon(new ImageIcon(makeImage(new Rectangle(30, 30), vis.colorMap.get(c))));
 				buttons.put(c, but);
 				JLabel lab = new JLabel();
-				lab.setText(c.name());
+				lab.setText(c.name().substring(0, c.name().indexOf("_")));
 				lab.setHorizontalTextPosition(JLabel.RIGHT);
 				butPanel.add(lab);
 				butPanel.add(Box.createHorizontalGlue());
