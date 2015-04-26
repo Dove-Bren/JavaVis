@@ -1102,14 +1102,30 @@ public class JungVisualization {
 		     JToolBar colorlegend = new JToolBar();
 		     colorlegend.setLayout(new BoxLayout(colorlegend, BoxLayout.LINE_AXIS));
 		     colorlegend.setFloatable(false);
-		     for (colors c : colorMap.keySet()) {
-		    	 JLabel lab = new JLabel(c.name().substring(0, c.name().indexOf("_")), new ImageIcon(ColorSelectAction.makeImage(new Rectangle(30, 30), colorMap.get(c))), JLabel.CENTER);
-		    	 lab.setHorizontalTextPosition(JLabel.LEADING);
-		    	 lab.setVerticalTextPosition(JLabel.CENTER);
-		    	 colorlegend.add(lab);
-		    	 colorlegend.add(Box.createHorizontalGlue());
-		     }
+//		     for (colors c : colorMap.keySet()) {
+//		    	 JLabel lab = new JLabel(c.name().substring(0, c.name().indexOf("_")), new ImageIcon(ColorSelectAction.makeImage(new Rectangle(30, 30), colorMap.get(c))), JLabel.CENTER);
+//		    	 lab.setHorizontalTextPosition(JLabel.LEADING);
+//		    	 lab.setVerticalTextPosition(JLabel.CENTER);
+//		    	 colorlegend.add(lab);
+//		    	 colorlegend.add(Box.createHorizontalGlue());
+//		     }
+	    	 colorlegend.add(Box.createHorizontalGlue());
+		     JLabel lab = new JLabel("Class: ", new ImageIcon(ColorSelectAction.makeImage(new Rectangle(30, 30), colorMap.get(colors.Class_Color))), JLabel.CENTER);
+		     lab.setHorizontalTextPosition(JLabel.LEADING);
+	    	 lab.setVerticalTextPosition(JLabel.CENTER);
+	    	 colorlegend.add(lab);
+	    	 colorlegend.add(Box.createHorizontalGlue());
+	    	 lab = new JLabel("Interface: ", new ImageIcon(ColorSelectAction.makeImage(new Rectangle(30, 30), colorMap.get(colors.Interface_Color))), JLabel.CENTER);
+		     lab.setHorizontalTextPosition(JLabel.LEADING);
+	    	 lab.setVerticalTextPosition(JLabel.CENTER);
+	    	 colorlegend.add(lab);
+	    	 colorlegend.add(Box.createHorizontalGlue());
+	    	 lab = new JLabel("Enumeration: ", new ImageIcon(ColorSelectAction.makeImage(new Rectangle(30, 30), colorMap.get(colors.Enumeration_Color))), JLabel.CENTER);
+		     lab.setHorizontalTextPosition(JLabel.LEADING);
+	    	 lab.setVerticalTextPosition(JLabel.CENTER);
+	    	 colorlegend.add(lab);
 		     content.add(colorlegend, BorderLayout.PAGE_END);
+	    	 colorlegend.add(Box.createHorizontalGlue());
 		     
 
 		     JMenuBar menuBar = new JMenuBar();
